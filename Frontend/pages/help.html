@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Tutorials - Silent Speech Translator</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .help-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .help-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .help-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .help-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .help-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .help-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid #3f3f5e;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #3f3f5e;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Help Sidebar */
+        .help-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: var(--card-bg);
+            border: 1px solid #3f3f5e;
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .help-categories {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border: 1px solid #3f3f5e;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .category-item:hover {
+            background: var(--secondary-bg);
+        }
+
+        .category-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .category-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .category-item.active .category-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .quick-links {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border: 1px solid #3f3f5e;
+            margin-top: 1rem;
+        }
+
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .link-item:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* FAQ Section */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-toggle {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        /* Tutorial Cards */
+        .tutorial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tutorial-card {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .tutorial-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .tutorial-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tutorial-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .tutorial-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .tutorial-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .tutorial-duration {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Video Tutorial */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .video-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        /* Step-by-step Guide */
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .step-image {
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        /* Contact Support */
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .contact-card {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+        }
+
+        .contact-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Support Form */
+        .support-form {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        /* Community Section */
+        .community-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .guide-step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .step-number {
+                align-self: center;
+            }
+
+            .tutorial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-lips"></i>
+                <span>SilentSpeech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="history.html" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="language.html" class="nav-link">
+                    <i class="fas fa-globe"></i>
+                    <span>Language</span>
+                </a>
+                <a href="training.html" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Training</span>
+                </a>
+                <a href="emotion.html" class="nav-link">
+                    <i class="fas fa-smile"></i>
+                    <span>Emotion</span>
+                </a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="help-container">
+            <!-- Header -->
+            <div class="help-header">
+                <h1 class="help-title">
+                    <i class="fas fa-question-circle"></i>
+                    Help & Tutorials
+                </h1>
+                <p class="help-subtitle">
+                    Get the most out of Silent Speech Translator with our comprehensive guides and support resources
+                </p>
+            </div>
+
+            <div class="help-grid">
+                <!-- Left Sidebar -->
+                <div class="help-sidebar">
+                    <!-- Search -->
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search help articles..." id="searchHelp">
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="help-categories">
+                        <div class="category-list">
+                            <a href="#getting-started" class="category-item active" data-section="getting-started">
+                                <div class="category-icon">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <span>Getting Started</span>
+                            </a>
+                            <a href="#tutorials" class="category-item" data-section="tutorials">
+                                <div class="category-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <span>Video Tutorials</span>
+                            </a>
+                            <a href="#faq" class="category-item" data-section="faq">
+                                <div class="category-icon">
+                                    <i class="fas fa-question"></i>
+                                </div>
+                                <span>FAQ</span>
+                            </a>
+                            <a href="#troubleshooting" class="category-item" data-section="troubleshooting">
+                                <div class="category-icon">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <span>Troubleshooting</span>
+                            </a>
+                            <a href="#contact" class="category-item" data-section="contact">
+                                <div class="category-icon">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <span>Contact Support</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="quick-links">
+                        <h3 style="margin-bottom: 1rem;">Quick Links</h3>
+                        <div class="link-list">
+                            <a href="#" class="link-item">
+                                <i class="fas fa-book"></i>
+                                <span>User Manual</span>
+                            </a>
+                            <a href="#" class="link-item">
+                                <i class="fas fa-video"></i>
+                                <span>Video Guides</span>
+                            </a>
+                            <a href="#" class="link-item">
+                                <i class="fas fa-download"></i>
+                                <span>Download Resources</span>
+                            </a>
+                            <a href="#" class="link-item">
+                                <i class="fas fa-users"></i>
+                                <span>Community Forum</span>
+                            </a>
+                            <a href="#" class="link-item">
+                                <i class="fas fa-bug"></i>
+                                <span>Report a Bug</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content -->
+                <div class="help-content">
+                    <!-- Getting Started Section -->
+                    <section id="getting-started" class="help-section active-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Getting Started</h2>
+                                <p class="section-description">Learn how to set up and use Silent Speech Translator effectively</p>
+                            </div>
+                        </div>
+
+                        <div class="guide-steps">
+                            <div class="guide-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Set Up Your Camera</div>
+                                    <div class="step-description">
+                                        Position your camera at eye level with good lighting. Make sure your face is clearly visible and well-lit. Avoid backlighting and shadows on your face.
+                                    </div>
+                                    <div class="step-image">
+                                        <i class="fas fa-camera"></i>
+                                        Camera Setup Example
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="guide-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Calibrate Lip Reading</div>
+                                    <div class="step-description">
+                                        Use the AI Training section to calibrate the lip reading for your specific speaking style. This improves accuracy significantly.
+                                    </div>
+                                    <div class="step-image">
+                                        <i class="fas fa-brain"></i>
+                                        Training Interface
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="guide-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Configure Languages</div>
+                                    <div class="step-description">
+                                        Set your preferred input and output languages in the Language Settings. You can also customize voice output and translation style.
+                                    </div>
+                                    <div class="step-image">
+                                        <i class="fas fa-globe"></i>
+                                        Language Settings
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="guide-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Start Communicating</div>
+                                    <div class="step-description">
+                                        Go to the Home page, position your face in the camera view, and start speaking silently. The app will translate your lip movements in real-time.
+                                    </div>
+                                    <div class="step-image">
+                                        <i class="fas fa-microphone"></i>
+                                        Live Translation
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-grid">
+                            <div class="tutorial-card">
+                                <div class="tutorial-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <div class="tutorial-title">Camera Setup Guide</div>
+                                <div class="tutorial-description">
+                                    Learn how to properly set up your camera for optimal lip reading accuracy in different lighting conditions.
+                                </div>
+                                <div class="tutorial-meta">
+                                    <span>Beginner</span>
+                                    <span class="tutorial-duration">
+                                        <i class="fas fa-clock"></i>
+                                        5 min
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="tutorial-card">
+                                <div class="tutorial-icon">
+                                    <i class="fas fa-sliders-h"></i>
+                                </div>
+                                <div class="tutorial-title">Settings Optimization</div>
+                                <div class="tutorial-description">
+                                    Discover the best settings for your specific needs and learn how to customize the app for maximum efficiency.
+                                </div>
+                                <div class="tutorial-meta">
+                                    <span>Intermediate</span>
+                                    <span class="tutorial-duration">
+                                        <i class="fas fa-clock"></i>
+                                        8 min
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="tutorial-card">
+                                <div class="tutorial-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="tutorial-title">Accuracy Improvement</div>
+                                <div class="tutorial-description">
+                                    Tips and techniques to improve translation accuracy through proper training and usage patterns.
+                                </div>
+                                <div class="tutorial-meta">
+                                    <span>Advanced</span>
+                                    <span class="tutorial-duration">
+                                        <i class="fas fa-clock"></i>
+                                        12 min
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Video Tutorials Section -->
+                    <section id="tutorials" class="help-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Video Tutorials</h2>
+                                <p class="section-description">Watch step-by-step video guides to master Silent Speech Translator</p>
+                            </div>
+                        </div>
+
+                        <div class="video-container">
+                            <div class="video-placeholder">
+                                <div class="video-icon">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <div>Video tutorials will be available here</div>
+                                <div class="section-description">Comprehensive video guides coming soon</div>
+                            </div>
+                        </div>
+
+                        <div class="video-controls">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-play"></i>
+                                Play Introduction
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-download"></i>
+                                Download Guide
+                            </button>
+                        </div>
+
+                        <div class="tutorial-grid">
+                            <div class="tutorial-card">
+                                <div class="tutorial-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <div class="tutorial-title">Quick Start Guide</div>
+                                <div class="tutorial-description">
+                                    Get up and running in 5 minutes with this comprehensive quick start video tutorial.
+                                </div>
+                                <div class="tutorial-meta">
+                                    <span>5:30</span>
+                                    <span class="tutorial-duration">
+                                        <i class="fas fa-eye"></i>
+                                        1.2K views
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="tutorial-card">
+                                <div class="tutorial-icon">
+                                    <i class="fas fa-magic"></i>
+                                </div>
+                                <div class="tutorial-title">Advanced Features</div>
+                                <div class="tutorial-description">
+                                    Learn about advanced features like emotion detection, custom training, and API integration.
+                                </div>
+                                <div class="tutorial-meta">
+                                    <span>15:45</span>
+                                    <span class="tutorial-duration">
+                                        <i class="fas fa-eye"></i>
+                                        856 views
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="tutorial-card">
+                                <div class="tutorial-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="tutorial-title">Mobile App Guide</div>
+                                <div class="tutorial-description">
+                                    Complete guide to using Silent Speech Translator on mobile devices with touch optimization.
+                                </div>
+                                <div class="tutorial-meta">
+                                    <span>12:20</span>
+                                    <span class="tutorial-duration">
+                                        <i class="fas fa-eye"></i>
+                                        2.1K views
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- FAQ Section -->
+                    <section id="faq" class="help-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-question"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Frequently Asked Questions</h2>
+                                <p class="section-description">Find answers to common questions about Silent Speech Translator</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    How accurate is the lip reading technology?
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    The accuracy varies based on lighting, camera quality, and individual speaking patterns. With proper setup and training, most users achieve 85-95% accuracy for common phrases. The AI continuously learns and improves with usage.
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    What are the system requirements?
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <strong>Minimum Requirements:</strong><br>
+                                    - Modern web browser (Chrome, Firefox, Safari, Edge)<br>
+                                    - Webcam with at least 720p resolution<br>
+                                    - Good internet connection<br>
+                                    - Microphone (for voice output)<br><br>
+                                    <strong>Recommended:</strong><br>
+                                    - 1080p webcam or better<br>
+                                    - Stable lighting conditions<br>
+                                    - Quiet environment for better focus
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    Can I use the app in noisy environments?
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    Yes! Silent Speech Translator relies solely on visual lip reading, so background noise doesn't affect translation accuracy. This makes it perfect for noisy environments like factories, public spaces, or crowded rooms.
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    How does the AI training work?
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    The AI training process involves recording yourself speaking specific phrases multiple times. The system analyzes your unique lip movements, speaking style, and facial structure to create a personalized model. This significantly improves accuracy for your specific usage patterns.
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    Is my data private and secure?
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    Yes, privacy is our top priority. All processing happens locally in your browser when possible. Video data is never stored on our servers without explicit permission. You have full control over your data and can delete it at any time.
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    What languages are supported?
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    Currently, we support 12 major languages including English, Spanish, French, German, Hindi, Chinese, Japanese, and more. We're continuously adding new languages based on user demand and community feedback.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Troubleshooting Section -->
+                    <section id="troubleshooting" class="help-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Troubleshooting</h2>
+                                <p class="section-description">Solutions to common issues and problems</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    Camera not working or not detected
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <strong>Solutions:</strong><br>
+                                    1. Check if another app is using the camera<br>
+                                    2. Grant camera permissions in your browser<br>
+                                    3. Try refreshing the page<br>
+                                    4. Check camera connections (for external cameras)<br>
+                                    5. Try using a different browser<br>
+                                    6. Update your browser to the latest version
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    Low translation accuracy
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <strong>Improvement Tips:</strong><br>
+                                    1. Ensure good lighting on your face<br>
+                                    2. Position camera at eye level<br>
+                                    3. Speak clearly and at moderate pace<br>
+                                    4. Use the AI training feature<br>
+                                    5. Avoid strong backlighting<br>
+                                    6. Keep your face within the guide circle<br>
+                                    7. Train with common phrases you use frequently
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    App is running slowly
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <strong>Performance Optimization:</strong><br>
+                                    1. Close other tabs and applications<br>
+                                    2. Check your internet connection<br>
+                                    3. Clear browser cache and cookies<br>
+                                    4. Update your browser<br>
+                                    5. Try lowering camera resolution in settings<br>
+                                    6. Use a computer with better specifications for real-time processing
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    Voice output not working
+                                    <i class="fas fa-chevron-down faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <strong>Audio Solutions:</strong><br>
+                                    1. Check if your speakers/headphones are connected<br>
+                                    2. Adjust system volume<br>
+                                    3. Check browser audio permissions<br>
+                                    4. Try different voice options in settings<br>
+                                    5. Test with different browsers<br>
+                                    6. Ensure no other applications are blocking audio
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Pro Tip:</strong> Most issues can be resolved by refreshing the page and ensuring you've granted all necessary permissions (camera, microphone) to the website.
+                        </div>
+                    </section>
+
+                    <!-- Contact Support Section -->
+                    <section id="contact" class="help-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Contact Support</h2>
+                                <p class="section-description">Get help from our support team and community</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-methods">
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-title">Email Support</div>
+                                <div class="contact-description">
+                                    Send us a detailed email and we'll get back to you within 24 hours.
+                                </div>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Send Email
+                                </button>
+                            </div>
+
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="contact-title">Live Chat</div>
+                                <div class="contact-description">
+                                    Chat with our support team in real-time during business hours.
+                                </div>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-comment"></i>
+                                    Start Chat
+                                </button>
+                            </div>
+
+                            <div class="contact-card">
+                                <div class="contact-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="contact-title">Community Forum</div>
+                                <div class="contact-description">
+                                    Get help from other users and share your experiences.
+                                </div>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Visit Forum
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="support-form">
+                            <h3 style="margin-bottom: 1.5rem;">Send us a Message</h3>
+                            <div class="form-grid">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Your Name</label>
+                                        <input type="text" class="form-input" id="supportName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-input" id="supportEmail">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Subject</label>
+                                    <input type="text" class="form-input" id="supportSubject">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Issue Type</label>
+                                    <select class="form-select" id="issueType">
+                                        <option value="">Select issue type</option>
+                                        <option value="technical">Technical Issue</option>
+                                        <option value="feature">Feature Request</option>
+                                        <option value="bug">Bug Report</option>
+                                        <option value="account">Account Issue</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-textarea" id="supportMessage" rows="5" placeholder="Please describe your issue in detail..."></textarea>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button class="btn btn-secondary" id="clearSupportBtn">
+                                        <i class="fas fa-times"></i>
+                                        Clear
+                                    </button>
+                                    <button class="btn btn-primary" id="sendSupportBtn">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Send Message
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="community-stats">
+                            <div class="stat-card">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Support Available</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">2h</div>
+                                <div class="stat-label">Average Response Time</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">98%</div>
+                                <div class="stat-label">Satisfaction Rate</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">10k+</div>
+                                <div class="stat-label">Community Members</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        class HelpManager {
+            constructor() {
+                this.currentSection = 'getting-started';
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.setupFAQ();
+                this.setupSectionNavigation();
+            }
+
+            bindEvents() {
+                // Section navigation
+                document.querySelectorAll('.category-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const section = e.currentTarget.dataset.section;
+                        this.showSection(section);
+                    });
+                });
+
+                // Search functionality
+                document.getElementById('searchHelp').addEventListener('input', (e) => {
+                    this.searchHelp(e.target.value);
+                });
+
+                // Support form
+                document.getElementById('sendSupportBtn').addEventListener('click', () => {
+                    this.sendSupportMessage();
+                });
+
+                document.getElementById('clearSupportBtn').addEventListener('click', () => {
+                    this.clearSupportForm();
+                });
+            }
+
+            setupFAQ() {
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    const question = item.querySelector('.faq-question');
+                    question.addEventListener('click', () => {
+                        this.toggleFAQ(item);
+                    });
+                });
+            }
+
+            setupSectionNavigation() {
+                this.showSection('getting-started');
+            }
+
+            showSection(sectionName) {
+                // Hide all sections
+                document.querySelectorAll('.help-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // Remove active class from all nav items
+                document.querySelectorAll('.category-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Show selected section
+                document.getElementById(sectionName).style.display = 'block';
+                
+                // Add active class to selected nav item
+                document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+                this.currentSection = sectionName;
+            }
+
+            toggleFAQ(item) {
+                const isActive = item.classList.contains('active');
+                
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            }
+
+            searchHelp(query) {
+                if (query.length < 2) return;
+
+                const results = this.performSearch(query);
+                this.displaySearchResults(results);
+            }
+
+            performSearch(query) {
+                // Mock search results - in real app, this would search through help articles
+                const mockResults = [
+                    { title: 'How to improve translation accuracy', section: 'getting-started', relevance: 95 },
+                    { title: 'Camera setup and calibration', section: 'getting-started', relevance: 88 },
+                    { title: 'Troubleshooting common issues', section: 'troubleshooting', relevance: 82 },
+                    { title: 'AI training best practices', section: 'getting-started', relevance: 78 },
+                    { title: 'Language settings configuration', section: 'faq', relevance: 75 }
+                ];
+
+                return mockResults.filter(result => 
+                    result.title.toLowerCase().includes(query.toLowerCase())
+                );
+            }
+
+            displaySearchResults(results) {
+                // In a real app, this would display search results
+                if (results.length > 0) {
+                    utils.log('Search results:', results);
+                    // You could show these results in a dropdown or results section
+                }
+            }
+
+            sendSupportMessage() {
+                const name = document.getElementById('supportName').value;
+                const email = document.getElementById('supportEmail').value;
+                const subject = document.getElementById('supportSubject').value;
+                const issueType = document.getElementById('issueType').value;
+                const message = document.getElementById('supportMessage').value;
+
+                if (!name || !email || !subject || !issueType || !message) {
+                    this.showMessage('Please fill in all required fields', 'error');
+                    return;
+                }
+
+                if (!utils.isValidEmail(email)) {
+                    this.showMessage('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                // Simulate sending message
+                utils.log('Support message sent:', { name, email, subject, issueType, message });
+                
+                this.showMessage('Your message has been sent successfully! We will get back to you within 24 hours.', 'success');
+                this.clearSupportForm();
+            }
+
+            clearSupportForm() {
+                document.getElementById('supportName').value = '';
+                document.getElementById('supportEmail').value = '';
+                document.getElementById('supportSubject').value = '';
+                document.getElementById('issueType').value = '';
+                document.getElementById('supportMessage').value = '';
+            }
+
+            showMessage(message, type = 'info') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `alert alert-${type}`;
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    z-index: 1000;
+                    min-width: 300px;
+                `;
+                messageDiv.textContent = message;
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+        }
+
+        // Initialize help manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.helpManager = new HelpManager();
+        });
+    </script>
+</body>
+</html>

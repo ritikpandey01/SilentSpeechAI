@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Training - Silent Speech Translator</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .training-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .training-header {
+            margin-bottom: 2rem;
+        }
+
+        .training-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .training-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .training-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .training-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .training-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid #3f3f5e;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #3f3f5e;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Progress Section */
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-card {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .progress-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .progress-chart {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-bar {
+            height: 8px;
+            background: var(--card-bg);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), #8b85ff);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Training Interface */
+        .training-interface {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .training-camera {
+            width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .camera-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .camera-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .training-phrase {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .training-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .record-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: var(--error-color);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .record-button.recording {
+            animation: pulse 1.5s infinite;
+            background: var(--success-color);
+        }
+
+        .record-button:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Training Sessions */
+        .sessions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .session-item {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .session-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .session-details {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .session-progress {
+            width: 100px;
+            height: 6px;
+            background: var(--card-bg);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .session-progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Personal Words */
+        .personal-words {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .word-item {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .word-text {
+            font-weight: 500;
+        }
+
+        .word-accuracy {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .accuracy-bar {
+            width: 60px;
+            height: 4px;
+            background: var(--card-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .accuracy-fill {
+            height: 100%;
+            background: var(--success-color);
+            border-radius: 2px;
+        }
+
+        .accuracy-low { background: var(--error-color); }
+        .accuracy-medium { background: var(--warning-color); }
+        .accuracy-high { background: var(--success-color); }
+
+        /* Add Word Form */
+        .add-word-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .word-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid #3f3f5e;
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+        }
+
+        /* Training Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        /* Model Info */
+        .model-info {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .model-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .training-controls {
+                flex-direction: column;
+            }
+
+            .add-word-form {
+                flex-direction: column;
+            }
+
+            .progress-overview {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-lips"></i>
+                <span>SilentSpeech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="history.html" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="language.html" class="nav-link">
+                    <i class="fas fa-globe"></i>
+                    <span>Language</span>
+                </a>
+                <a href="training.html" class="nav-link active">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Training</span>
+                </a>
+                <a href="emotion.html" class="nav-link">
+                    <i class="fas fa-smile"></i>
+                    <span>Emotion</span>
+                </a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="training-container">
+            <!-- Header -->
+            <div class="training-header">
+                <h1 class="training-title">
+                    <i class="fas fa-brain"></i>
+                    AI Personal Training
+                </h1>
+                <p class="training-subtitle">
+                    Train the AI to better understand your unique speaking patterns
+                </p>
+            </div>
+
+            <div class="training-grid">
+                <!-- Left Column - Training Interface -->
+                <div class="training-column">
+                    <!-- Progress Overview -->
+                    <section class="training-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Training Progress</h2>
+                                <p class="section-description">Your AI model improvement over time</p>
+                            </div>
+                        </div>
+
+                        <div class="progress-overview">
+                            <div class="progress-card">
+                                <div class="progress-number" id="overallAccuracy">87%</div>
+                                <div class="progress-label">Overall Accuracy</div>
+                            </div>
+                            <div class="progress-card">
+                                <div class="progress-number" id="trainedPhrases">42</div>
+                                <div class="progress-label">Trained Phrases</div>
+                            </div>
+                            <div class="progress-card">
+                                <div class="progress-number" id="sessionsCompleted">8</div>
+                                <div class="progress-label">Sessions Completed</div>
+                            </div>
+                            <div class="progress-card">
+                                <div class="progress-number" id="improvement">+15%</div>
+                                <div class="progress-label">Improvement</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-chart">
+                            <div class="chart-labels">
+                                <span>Start</span>
+                                <span>Current</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: 87%"></div>
+                            </div>
+                            <div class="chart-labels">
+                                <span>72%</span>
+                                <span>87%</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Training Interface -->
+                    <section class="training-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Training Session</h2>
+                                <p class="section-description">Record phrases to improve recognition accuracy</p>
+                            </div>
+                        </div>
+
+                        <div class="training-interface">
+                            <div class="training-camera">
+                                <div class="camera-placeholder">
+                                    <div class="camera-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                    <div>Camera feed will appear here</div>
+                                    <div class="section-description">Position your face in the frame</div>
+                                </div>
+                            </div>
+
+                            <div class="training-phrase" id="currentPhrase">
+                                "Hello, how are you today?"
+                            </div>
+
+                            <div class="training-controls">
+                                <button class="btn btn-secondary" id="skipPhraseBtn">
+                                    <i class="fas fa-forward"></i>
+                                    Skip Phrase
+                                </button>
+                                <button class="record-button" id="recordBtn">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="btn btn-secondary" id="playbackBtn" disabled>
+                                    <i class="fas fa-play"></i>
+                                    Playback
+                                </button>
+                            </div>
+
+                            <div class="progress mt-3">
+                                <div class="progress-bar" style="width: 60%"></div>
+                            </div>
+                            <div class="text-muted text-center mt-1">
+                                Session Progress: 3/5 phrases
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Personal Dictionary -->
+                    <section class="training-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Personal Dictionary</h2>
+                                <p class="section-description">Words and phrases unique to you</p>
+                            </div>
+                        </div>
+
+                        <div class="personal-words">
+                            <div class="word-item">
+                                <div class="word-text">"JavaScript"</div>
+                                <div class="word-accuracy">
+                                    <div class="accuracy-bar">
+                                        <div class="accuracy-fill accuracy-high" style="width: 92%"></div>
+                                    </div>
+                                    <span>92%</span>
+                                </div>
+                            </div>
+                            <div class="word-item">
+                                <div class="word-text">"Algorithm"</div>
+                                <div class="word-accuracy">
+                                    <div class="accuracy-bar">
+                                        <div class="accuracy-fill accuracy-medium" style="width: 75%"></div>
+                                    </div>
+                                    <span>75%</span>
+                                </div>
+                            </div>
+                            <div class="word-item">
+                                <div class="word-text">"Neural Network"</div>
+                                <div class="word-accuracy">
+                                    <div class="accuracy-bar">
+                                        <div class="accuracy-fill accuracy-low" style="width: 45%"></div>
+                                    </div>
+                                    <span>45%</span>
+                                </div>
+                            </div>
+                            <div class="word-item">
+                                <div class="word-text">"API Integration"</div>
+                                <div class="word-accuracy">
+                                    <div class="accuracy-bar">
+                                        <div class="accuracy-fill accuracy-medium" style="width: 68%"></div>
+                                    </div>
+                                    <span>68%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="add-word-form">
+                            <input type="text" class="word-input" placeholder="Add a new word or phrase..." id="newWordInput">
+                            <button class="btn btn-primary" id="addWordBtn">
+                                <i class="fas fa-plus"></i>
+                                Add
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column - Stats & Sessions -->
+                <div class="stats-column">
+                    <!-- Training Sessions -->
+                    <section class="training-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Training Sessions</h2>
+                                <p class="section-description">Recent training activities</p>
+                            </div>
+                        </div>
+
+                        <div class="sessions-list">
+                            <div class="session-item">
+                                <div class="session-info">
+                                    <div class="session-name">Basic Phrases</div>
+                                    <div class="session-details">5 phrases • 15 minutes ago</div>
+                                    <div class="session-progress">
+                                        <div class="session-progress-fill" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div class="session-accuracy">94%</div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-info">
+                                    <div class="session-name">Technical Terms</div>
+                                    <div class="session-details">8 phrases • 2 hours ago</div>
+                                    <div class="session-progress">
+                                        <div class="session-progress-fill" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                                <div class="session-accuracy">82%</div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-info">
+                                    <div class="session-name">Emergency Phrases</div>
+                                    <div class="session-details">6 phrases • Yesterday</div>
+                                    <div class="session-progress">
+                                        <div class="session-progress-fill" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div class="session-accuracy">96%</div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline w-full mt-2" id="newSessionBtn">
+                            <i class="fas fa-plus"></i>
+                            New Training Session
+                        </button>
+                    </section>
+
+                    <!-- Model Statistics -->
+                    <section class="training-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Model Statistics</h2>
+                                <p class="section-description">Your personal AI model performance</p>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">1,247</div>
+                                <div class="stat-label">Words Learned</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">42</div>
+                                <div class="stat-label">Training Hours</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">98.2%</div>
+                                <div class="stat-label">Common Words</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">76.5%</div>
+                                <div class="stat-label">Rare Words</div>
+                            </div>
+                        </div>
+
+                        <div class="model-info">
+                            <div class="section-description">
+                                <strong>Model Version:</strong> Personal v2.1.4
+                            </div>
+                            <div class="section-description">
+                                <strong>Last Updated:</strong> 2 hours ago
+                            </div>
+                            <div class="section-description">
+                                <strong>Next Training:</strong> Recommended in 3 days
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Quick Actions -->
+                    <section class="training-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Quick Actions</h2>
+                                <p class="section-description">Manage your AI model</p>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; gap: 0.5rem;">
+                            <button class="btn btn-secondary" id="exportModelBtn">
+                                <i class="fas fa-download"></i>
+                                Export Model Data
+                            </button>
+                            <button class="btn btn-secondary" id="retrainModelBtn">
+                                <i class="fas fa-sync"></i>
+                                Retrain Model
+                            </button>
+                            <button class="btn btn-danger" id="resetModelBtn">
+                                <i class="fas fa-trash"></i>
+                                Reset Model
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        class TrainingManager {
+            constructor() {
+                this.isRecording = false;
+                this.currentSession = null;
+                this.trainingData = {
+                    overallAccuracy: 87,
+                    trainedPhrases: 42,
+                    sessionsCompleted: 8,
+                    improvement: 15,
+                    personalWords: [
+                        { text: "JavaScript", accuracy: 92 },
+                        { text: "Algorithm", accuracy: 75 },
+                        { text: "Neural Network", accuracy: 45 },
+                        { text: "API Integration", accuracy: 68 }
+                    ],
+                    sessions: [
+                        { name: "Basic Phrases", phrases: 5, time: "15 minutes ago", progress: 100, accuracy: 94 },
+                        { name: "Technical Terms", phrases: 8, time: "2 hours ago", progress: 75, accuracy: 82 },
+                        { name: "Emergency Phrases", phrases: 6, time: "Yesterday", progress: 100, accuracy: 96 }
+                    ]
+                };
+
+                this.trainingPhrases = [
+                    "Hello, how are you today?",
+                    "I need help with this project",
+                    "Where is the nearest hospital?",
+                    "Thank you for your assistance",
+                    "Can you speak more slowly please?",
+                    "What time does the meeting start?",
+                    "I would like to order coffee",
+                    "My name is Alex",
+                    "How much does this cost?",
+                    "I'm not feeling well"
+                ];
+
+                this.currentPhraseIndex = 0;
+                this.init();
+            }
+
+            init() {
+                this.loadTrainingData();
+                this.bindEvents();
+                this.updateUI();
+                this.startNewSession();
+            }
+
+            loadTrainingData() {
+                const saved = utils.getItem('trainingData');
+                if (saved) {
+                    this.trainingData = { ...this.trainingData, ...saved };
+                }
+            }
+
+            saveTrainingData() {
+                utils.setItem('trainingData', this.trainingData);
+            }
+
+            bindEvents() {
+                // Record button
+                document.getElementById('recordBtn').addEventListener('click', () => {
+                    this.toggleRecording();
+                });
+
+                // Skip phrase button
+                document.getElementById('skipPhraseBtn').addEventListener('click', () => {
+                    this.skipPhrase();
+                });
+
+                // Playback button
+                document.getElementById('playbackBtn').addEventListener('click', () => {
+                    this.playbackRecording();
+                });
+
+                // Add word button
+                document.getElementById('addWordBtn').addEventListener('click', () => {
+                    this.addPersonalWord();
+                });
+
+                // New session button
+                document.getElementById('newSessionBtn').addEventListener('click', () => {
+                    this.startNewSession();
+                });
+
+                // Quick action buttons
+                document.getElementById('exportModelBtn').addEventListener('click', () => {
+                    this.exportModelData();
+                });
+
+                document.getElementById('retrainModelBtn').addEventListener('click', () => {
+                    this.retrainModel();
+                });
+
+                document.getElementById('resetModelBtn').addEventListener('click', () => {
+                    this.resetModel();
+                });
+
+                // Enter key for adding words
+                document.getElementById('newWordInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.addPersonalWord();
+                    }
+                });
+            }
+
+            startNewSession() {
+                this.currentSession = {
+                    id: Date.now(),
+                    phrases: [],
+                    startTime: new Date(),
+                    completed: false
+                };
+
+                this.currentPhraseIndex = 0;
+                this.showNextPhrase();
+                this.updateProgress();
+
+                utils.log('New training session started');
+            }
+
+            showNextPhrase() {
+                if (this.currentPhraseIndex < this.trainingPhrases.length) {
+                    const phrase = this.trainingPhrases[this.currentPhraseIndex];
+                    document.getElementById('currentPhrase').textContent = `"${phrase}"`;
+                    this.updateProgress();
+                } else {
+                    this.completeSession();
+                }
+            }
+
+            toggleRecording() {
+                const recordBtn = document.getElementById('recordBtn');
+                
+                if (!this.isRecording) {
+                    // Start recording
+                    this.isRecording = true;
+                    recordBtn.classList.add('recording');
+                    recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                    
+                    // Enable playback button
+                    document.getElementById('playbackBtn').disabled = false;
+                    
+                    // Simulate recording process
+                    setTimeout(() => {
+                        this.stopRecording();
+                    }, 3000);
+                    
+                    utils.log('Recording started for phrase:', this.trainingPhrases[this.currentPhraseIndex]);
+                } else {
+                    this.stopRecording();
+                }
+            }
+
+            stopRecording() {
+                const recordBtn = document.getElementById('recordBtn');
+                
+                this.isRecording = false;
+                recordBtn.classList.remove('recording');
+                recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+
+                // Simulate processing
+                this.processRecording();
+            }
+
+            processRecording() {
+                // Simulate AI processing
+                utils.log('Processing recording...');
+                
+                setTimeout(() => {
+                    const accuracy = Math.floor(Math.random() * 20) + 80; // 80-100%
+                    
+                    // Add to session
+                    this.currentSession.phrases.push({
+                        text: this.trainingPhrases[this.currentPhraseIndex],
+                        accuracy: accuracy,
+                        timestamp: new Date()
+                    });
+
+                    // Update training data
+                    this.trainingData.trainedPhrases++;
+                    this.updateAccuracy(accuracy);
+
+                    // Move to next phrase
+                    this.currentPhraseIndex++;
+                    this.showNextPhrase();
+
+                    this.showFeedback(accuracy);
+                    
+                }, 1500);
+            }
+
+            updateAccuracy(newAccuracy) {
+                // Update overall accuracy (weighted average)
+                const totalWeight = this.trainingData.trainedPhrases;
+                const currentTotal = this.trainingData.overallAccuracy * (totalWeight - 1);
+                this.trainingData.overallAccuracy = Math.round((currentTotal + newAccuracy) / totalWeight);
+                
+                // Update improvement
+                const baseAccuracy = 72; // Starting accuracy
+                this.trainingData.improvement = this.trainingData.overallAccuracy - baseAccuracy;
+                
+                this.saveTrainingData();
+                this.updateUI();
+            }
+
+            skipPhrase() {
+                utils.log('Phrase skipped:', this.trainingPhrases[this.currentPhraseIndex]);
+                this.currentPhraseIndex++;
+                this.showNextPhrase();
+            }
+
+            playbackRecording() {
+                // Simulate playback
+                const phrase = this.trainingPhrases[this.currentPhraseIndex];
+                utils.log('Playing back recording for:', phrase);
+                
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(phrase);
+                    speechSynthesis.speak(utterance);
+                }
+            }
+
+            completeSession() {
+                this.currentSession.completed = true;
+                this.currentSession.endTime = new Date();
+                
+                // Add to sessions list
+                this.trainingData.sessions.unshift({
+                    name: `Session ${this.trainingData.sessions.length + 1}`,
+                    phrases: this.currentSession.phrases.length,
+                    time: 'Just now',
+                    progress: 100,
+                    accuracy: Math.round(
+                        this.currentSession.phrases.reduce((sum, p) => sum + p.accuracy, 0) / 
+                        this.currentSession.phrases.length
+                    )
+                });
+
+                this.trainingData.sessionsCompleted++;
+                this.saveTrainingData();
+                this.updateUI();
+
+                this.showSuccess('Training session completed!');
+                utils.log('Training session completed', this.currentSession);
+            }
+
+            addPersonalWord() {
+                const input = document.getElementById('newWordInput');
+                const word = input.value.trim();
+                
+                if (word) {
+                    // Add to personal words
+                    this.trainingData.personalWords.unshift({
+                        text: word,
+                        accuracy: 50 // Starting accuracy
+                    });
+
+                    this.saveTrainingData();
+                    this.updatePersonalWords();
+                    input.value = '';
+                    
+                    utils.log('Personal word added:', word);
+                    this.showSuccess(`"${word}" added to personal dictionary`);
+                }
+            }
+
+            updateUI() {
+                // Update progress overview
+                document.getElementById('overallAccuracy').textContent = `${this.trainingData.overallAccuracy}%`;
+                document.getElementById('trainedPhrases').textContent = this.trainingData.trainedPhrases;
+                document.getElementById('sessionsCompleted').textContent = this.trainingData.sessionsCompleted;
+                document.getElementById('improvement').textContent = `+${this.trainingData.improvement}%`;
+
+                // Update progress chart
+                document.querySelector('.chart-fill').style.width = `${this.trainingData.overallAccuracy}%`;
+                document.querySelector('.chart-labels:last-child span:last-child').textContent = 
+                    `${this.trainingData.overallAccuracy}%`;
+
+                this.updatePersonalWords();
+                this.updateSessionsList();
+            }
+
+            updateProgress() {
+                const progress = (this.currentPhraseIndex / this.trainingPhrases.length) * 100;
+                document.querySelector('.progress-bar').style.width = `${progress}%`;
+                document.querySelector('.text-muted').textContent = 
+                    `Session Progress: ${this.currentPhraseIndex}/${this.trainingPhrases.length} phrases`;
+            }
+
+            updatePersonalWords() {
+                const wordsContainer = document.querySelector('.personal-words');
+                wordsContainer.innerHTML = this.trainingData.personalWords.map(word => `
+                    <div class="word-item">
+                        <div class="word-text">"${word.text}"</div>
+                        <div class="word-accuracy">
+                            <div class="accuracy-bar">
+                                <div class="accuracy-fill 
+                                    ${word.accuracy >= 80 ? 'accuracy-high' : 
+                                      word.accuracy >= 60 ? 'accuracy-medium' : 'accuracy-low'}" 
+                                    style="width: ${word.accuracy}%">
+                                </div>
+                            </div>
+                            <span>${word.accuracy}%</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateSessionsList() {
+                const sessionsContainer = document.querySelector('.sessions-list');
+                sessionsContainer.innerHTML = this.trainingData.sessions.map(session => `
+                    <div class="session-item">
+                        <div class="session-info">
+                            <div class="session-name">${session.name}</div>
+                            <div class="session-details">${session.phrases} phrases • ${session.time}</div>
+                            <div class="session-progress">
+                                <div class="session-progress-fill" style="width: ${session.progress}%"></div>
+                            </div>
+                        </div>
+                        <div class="session-accuracy">${session.accuracy}%</div>
+                    </div>
+                `).join('');
+            }
+
+            showFeedback(accuracy) {
+                let message = `Good! Recognition accuracy: ${accuracy}%`;
+                let type = 'success';
+                
+                if (accuracy < 70) {
+                    message = `Needs improvement. Accuracy: ${accuracy}%`;
+                    type = 'warning';
+                } else if (accuracy > 90) {
+                    message = `Excellent! Accuracy: ${accuracy}%`;
+                }
+
+                this.showMessage(message, type);
+            }
+
+            showMessage(message, type = 'info') {
+                // Create a temporary message display
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `alert alert-${type}`;
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    z-index: 1000;
+                    min-width: 300px;
+                `;
+                messageDiv.textContent = message;
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 3000);
+            }
+
+            showSuccess(message) {
+                this.showMessage(message, 'success');
+            }
+
+            exportModelData() {
+                const data = {
+                    trainingData: this.trainingData,
+                    exportDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                utils.exportToJSON(data, 'silent-speech-model-data.json');
+                this.showSuccess('Model data exported successfully!');
+            }
+
+            retrainModel() {
+                if (confirm('This will retrain your AI model with all collected data. This may take a few minutes.')) {
+                    utils.log('Retraining model...');
+                    // Simulate retraining process
+                    setTimeout(() => {
+                        this.trainingData.overallAccuracy += 2; // Simulate improvement
+                        this.saveTrainingData();
+                        this.updateUI();
+                        this.showSuccess('Model retraining completed! Accuracy improved.');
+                    }, 2000);
+                }
+            }
+
+            resetModel() {
+                if (confirm('Are you sure you want to reset your AI model? This will delete all your training data and cannot be undone.')) {
+                    this.trainingData = {
+                        overallAccuracy: 72,
+                        trainedPhrases: 0,
+                        sessionsCompleted: 0,
+                        improvement: 0,
+                        personalWords: [],
+                        sessions: []
+                    };
+                    
+                    this.saveTrainingData();
+                    this.updateUI();
+                    this.startNewSession();
+                    this.showSuccess('AI model has been reset to defaults.');
+                }
+            }
+        }
+
+        // Initialize training manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.trainingManager = new TrainingManager();
+        });
+    </script>
+</body>
+</html>

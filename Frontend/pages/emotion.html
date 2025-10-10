@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection - Silent Speech Translator</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .emotion-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .emotion-header {
+            margin-bottom: 2rem;
+        }
+
+        .emotion-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .emotion-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .emotion-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .emotion-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid #3f3f5e;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #3f3f5e;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Live Emotion Detection */
+        .live-emotion {
+            text-align: center;
+        }
+
+        .emotion-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .emotion-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            transition: all 0.3s ease;
+            border: 4px solid transparent;
+        }
+
+        .emotion-avatar.happy { border-color: #10B981; background: rgba(16, 185, 129, 0.1); }
+        .emotion-avatar.sad { border-color: #3B82F6; background: rgba(59, 130, 246, 0.1); }
+        .emotion-avatar.angry { border-color: #EF4444; background: rgba(239, 68, 68, 0.1); }
+        .emotion-avatar.surprised { border-color: #F59E0B; background: rgba(245, 158, 11, 0.1); }
+        .emotion-avatar.neutral { border-color: #6B7280; background: rgba(107, 114, 128, 0.1); }
+        .emotion-avatar.fearful { border-color: #8B5CF6; background: rgba(139, 92, 246, 0.1); }
+        .emotion-avatar.disgusted { border-color: #84CC16; background: rgba(132, 204, 22, 0.1); }
+
+        .emotion-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .emotion-confidence {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .emotion-graph {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .graph-container {
+            height: 200px;
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .graph-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .graph-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .emotion-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric-card {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Emotion History */
+        .history-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .timeline-emoji {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-text {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-details {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .timeline-confidence {
+            font-weight: 600;
+        }
+
+        /* Emotion Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        /* Emotion Wheel */
+        .emotion-wheel {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .wheel-slice {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+            transform-origin: center;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .wheel-slice:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Camera Feed */
+        .camera-feed {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .camera-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .camera-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .face-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Controls */
+        .emotion-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Emotion Colors */
+        .happy-color { background: #10B981; }
+        .sad-color { background: #3B82F6; }
+        .angry-color { background: #EF4444; }
+        .surprised-color { background: #F59E0B; }
+        .neutral-color { background: #6B7280; }
+        .fearful-color { background: #8B5CF6; }
+        .disgusted-color { background: #84CC16; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .emotion-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .emotion-controls {
+                flex-direction: column;
+            }
+
+            .wheel-container {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-lips"></i>
+                <span>SilentSpeech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="history.html" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="language.html" class="nav-link">
+                    <i class="fas fa-globe"></i>
+                    <span>Language</span>
+                </a>
+                <a href="training.html" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Training</span>
+                </a>
+                <a href="emotion.html" class="nav-link active">
+                    <i class="fas fa-smile"></i>
+                    <span>Emotion</span>
+                </a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="emotion-container">
+            <!-- Header -->
+            <div class="emotion-header">
+                <h1 class="emotion-title">
+                    <i class="fas fa-smile"></i>
+                    Emotion Detection
+                </h1>
+                <p class="emotion-subtitle">
+                    Real-time facial expression analysis and emotion tracking
+                </p>
+            </div>
+
+            <div class="emotion-grid">
+                <!-- Left Column - Live Detection -->
+                <div class="detection-column">
+                    <!-- Live Emotion Detection -->
+                    <section class="emotion-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Live Emotion Detection</h2>
+                                <p class="section-description">Real-time analysis of facial expressions</p>
+                            </div>
+                        </div>
+
+                        <div class="live-emotion">
+                            <div class="camera-feed">
+                                <div class="camera-placeholder">
+                                    <div class="camera-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                    <div>Live camera feed for emotion detection</div>
+                                </div>
+                                <canvas class="face-overlay" id="faceOverlay"></canvas>
+                            </div>
+
+                            <div class="emotion-display">
+                                <div class="emotion-avatar neutral" id="emotionAvatar">
+                                    <i class="fas fa-meh" id="emotionIcon"></i>
+                                </div>
+                                <div class="emotion-name" id="emotionName">Neutral</div>
+                                <div class="emotion-confidence" id="emotionConfidence">85% confidence</div>
+                            </div>
+
+                            <div class="emotion-metrics">
+                                <div class="metric-card">
+                                    <div class="metric-value" id="detectionRate">96%</div>
+                                    <div class="metric-label">Detection Rate</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value" id="responseTime">42ms</div>
+                                    <div class="metric-label">Response Time</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value" id="sessionTime">02:15</div>
+                                    <div class="metric-label">Session Time</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value" id="emotionChanges">12</div>
+                                    <div class="metric-label">Emotion Changes</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Emotion Graph -->
+                    <section class="emotion-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Emotion Timeline</h2>
+                                <p class="section-description">Emotion changes over the current session</p>
+                            </div>
+                        </div>
+
+                        <div class="emotion-graph">
+                            <div class="graph-container">
+                                <canvas class="graph-canvas" id="emotionGraph"></canvas>
+                            </div>
+                            <div class="graph-labels">
+                                <span>2 min ago</span>
+                                <span>Now</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Emotion History -->
+                    <section class="emotion-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Recent Emotions</h2>
+                                <p class="section-description">Latest detected emotions and expressions</p>
+                            </div>
+                        </div>
+
+                        <div class="history-timeline" id="emotionTimeline">
+                            <!-- Timeline items will be populated by JavaScript -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column - Stats & Analysis -->
+                <div class="stats-column">
+                    <!-- Emotion Statistics -->
+                    <section class="emotion-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Emotion Statistics</h2>
+                                <p class="section-description">Your emotional patterns and trends</p>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-emoji">😊</div>
+                                <div class="stat-value">42%</div>
+                                <div class="stat-label">Happy</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-emoji">😐</div>
+                                <div class="stat-value">28%</div>
+                                <div class="stat-label">Neutral</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-emoji">😢</div>
+                                <div class="stat-value">15%</div>
+                                <div class="stat-label">Sad</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-emoji">😠</div>
+                                <div class="stat-value">8%</div>
+                                <div class="stat-label">Angry</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-emoji">😲</div>
+                                <div class="stat-value">5%</div>
+                                <div class="stat-label">Surprised</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-emoji">😨</div>
+                                <div class="stat-value">2%</div>
+                                <div class="stat-label">Fearful</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Emotion Wheel -->
+                    <section class="emotion-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Emotion Wheel</h2>
+                                <p class="section-description">Interactive emotion visualization</p>
+                            </div>
+                        </div>
+
+                        <div class="emotion-wheel">
+                            <div class="wheel-container" id="emotionWheel">
+                                <!-- Wheel slices will be generated by JavaScript -->
+                                <div class="wheel-center">
+                                    <span id="wheelEmotion">Neutral</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Emotional Insights -->
+                    <section class="emotion-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Emotional Insights</h2>
+                                <p class="section-description">AI-powered analysis of your emotional patterns</p>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; gap: 1rem;">
+                            <div class="alert alert-info">
+                                <i class="fas fa-smile"></i>
+                                <strong>Positive Trend:</strong> You've been happier during morning sessions
+                            </div>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-chart-line"></i>
+                                <strong>Pattern Detected:</strong> Stress levels increase during meetings
+                            </div>
+                            <div class="alert alert-success">
+                                <i class="fas fa-trophy"></i>
+                                <strong>Wellbeing:</strong> Your emotional balance has improved 15% this week
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Controls -->
+                    <section class="emotion-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Detection Controls</h2>
+                                <p class="section-description">Manage emotion detection settings</p>
+                            </div>
+                        </div>
+
+                        <div class="emotion-controls">
+                            <button class="btn btn-primary" id="startDetectionBtn">
+                                <i class="fas fa-play"></i>
+                                Start Detection
+                            </button>
+                            <button class="btn btn-secondary" id="stopDetectionBtn">
+                                <i class="fas fa-stop"></i>
+                                Stop Detection
+                            </button>
+                            <button class="btn btn-secondary" id="exportDataBtn">
+                                <i class="fas fa-download"></i>
+                                Export Data
+                            </button>
+                        </div>
+
+                        <div style="margin-top: 1rem;">
+                            <label class="form-check">
+                                <input type="checkbox" id="enableSound" checked>
+                                <span>Play emotion sounds</span>
+                            </label>
+                            <label class="form-check">
+                                <input type="checkbox" id="saveHistory" checked>
+                                <span>Save emotion history</span>
+                            </label>
+                            <label class="form-check">
+                                <input type="checkbox" id="showGraph">
+                                <span>Show real-time graph</span>
+                            </label>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        class EmotionDetector {
+            constructor() {
+                this.isDetecting = false;
+                this.currentEmotion = 'neutral';
+                this.emotionHistory = [];
+                this.sessionStartTime = null;
+                this.emotionChanges = 0;
+                
+                this.emotions = {
+                    happy: { emoji: '😊', icon: 'fa-smile', color: '#10B981', sound: 'happy' },
+                    sad: { emoji: '😢', icon: 'fa-frown', color: '#3B82F6', sound: 'sad' },
+                    angry: { emoji: '😠', icon: 'fa-angry', color: '#EF4444', sound: 'angry' },
+                    surprised: { emoji: '😲', icon: 'fa-surprise', color: '#F59E0B', sound: 'surprised' },
+                    neutral: { emoji: '😐', icon: 'fa-meh', color: '#6B7280', sound: 'neutral' },
+                    fearful: { emoji: '😨', icon: 'fa-flushed', color: '#8B5CF6', sound: 'fearful' },
+                    disgusted: { emoji: '🤢', icon: 'fa-grimace', color: '#84CC16', sound: 'disgusted' }
+                };
+
+                this.emotionData = [];
+                this.init();
+            }
+
+            init() {
+                this.loadEmotionData();
+                this.createEmotionWheel();
+                this.bindEvents();
+                this.generateMockHistory();
+                this.updateUI();
+                this.startMockDetection();
+            }
+
+            loadEmotionData() {
+                const saved = utils.getItem('emotionData');
+                if (saved) {
+                    this.emotionData = saved;
+                }
+            }
+
+            saveEmotionData() {
+                utils.setItem('emotionData', this.emotionData);
+            }
+
+            bindEvents() {
+                // Detection controls
+                document.getElementById('startDetectionBtn').addEventListener('click', () => {
+                    this.startDetection();
+                });
+
+                document.getElementById('stopDetectionBtn').addEventListener('click', () => {
+                    this.stopDetection();
+                });
+
+                document.getElementById('exportDataBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+
+                // Wheel interaction
+                this.setupWheelInteraction();
+            }
+
+            createEmotionWheel() {
+                const wheel = document.getElementById('emotionWheel');
+                const emotions = Object.keys(this.emotions);
+                const sliceAngle = 360 / emotions.length;
+
+                emotions.forEach((emotion, index) => {
+                    const slice = document.createElement('div');
+                    slice.className = `wheel-slice ${emotion}-color`;
+                    slice.style.transform = `rotate(${index * sliceAngle}deg)`;
+                    slice.dataset.emotion = emotion;
+                    wheel.appendChild(slice);
+                });
+            }
+
+            setupWheelInteraction() {
+                document.querySelectorAll('.wheel-slice').forEach(slice => {
+                    slice.addEventListener('click', (e) => {
+                        const emotion = e.target.dataset.emotion;
+                        this.setEmotion(emotion, 95);
+                    });
+                });
+            }
+
+            startDetection() {
+                this.isDetecting = true;
+                this.sessionStartTime = new Date();
+                this.emotionChanges = 0;
+                
+                document.getElementById('startDetectionBtn').disabled = true;
+                document.getElementById('stopDetectionBtn').disabled = false;
+
+                this.updateSessionTimer();
+                utils.log('Emotion detection started');
+            }
+
+            stopDetection() {
+                this.isDetecting = false;
+                
+                document.getElementById('startDetectionBtn').disabled = false;
+                document.getElementById('stopDetectionBtn').disabled = true;
+
+                utils.log('Emotion detection stopped');
+            }
+
+            startMockDetection() {
+                // Simulate emotion detection for demo
+                setInterval(() => {
+                    if (this.isDetecting) {
+                        this.detectRandomEmotion();
+                    }
+                }, 3000);
+            }
+
+            detectRandomEmotion() {
+                const emotions = Object.keys(this.emotions);
+                const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+                const confidence = Math.floor(Math.random() * 30) + 70; // 70-100%
+
+                this.setEmotion(randomEmotion, confidence);
+            }
+
+            setEmotion(emotion, confidence) {
+                if (this.currentEmotion !== emotion) {
+                    this.emotionChanges++;
+                }
+
+                this.currentEmotion = emotion;
+                const emotionInfo = this.emotions[emotion];
+
+                // Update UI
+                this.updateEmotionDisplay(emotion, confidence, emotionInfo);
+                this.addToHistory(emotion, confidence);
+                this.updateGraph();
+                this.updateMetrics();
+
+                // Play sound if enabled
+                if (document.getElementById('enableSound').checked) {
+                    this.playEmotionSound(emotion);
+                }
+
+                utils.log(`Emotion detected: ${emotion} (${confidence}%)`);
+            }
+
+            updateEmotionDisplay(emotion, confidence, emotionInfo) {
+                // Update avatar
+                const avatar = document.getElementById('emotionAvatar');
+                const icon = document.getElementById('emotionIcon');
+                const name = document.getElementById('emotionName');
+                const conf = document.getElementById('emotionConfidence');
+                const wheelEmotion = document.getElementById('wheelEmotion');
+
+                // Remove all emotion classes
+                avatar.className = 'emotion-avatar';
+                avatar.classList.add(emotion);
+
+                // Update content
+                icon.className = `fas ${emotionInfo.icon}`;
+                name.textContent = utils.capitalizeFirst(emotion);
+                conf.textContent = `${confidence}% confidence`;
+                wheelEmotion.textContent = utils.capitalizeFirst(emotion);
+            }
+
+            addToHistory(emotion, confidence) {
+                const historyItem = {
+                    emotion: emotion,
+                    confidence: confidence,
+                    timestamp: new Date(),
+                    text: this.getRandomPhrase(emotion)
+                };
+
+                this.emotionHistory.unshift(historyItem);
+                
+                // Keep only last 20 items
+                if (this.emotionHistory.length > 20) {
+                    this.emotionHistory = this.emotionHistory.slice(0, 20);
+                }
+
+                this.updateTimeline();
+                
+                // Save to data
+                this.emotionData.push(historyItem);
+                this.saveEmotionData();
+            }
+
+            getRandomPhrase(emotion) {
+                const phrases = {
+                    happy: [
+                        "That's wonderful news!",
+                        "I'm feeling great today!",
+                        "This is amazing!",
+                        "I love this!",
+                        "Everything is going well!"
+                    ],
+                    sad: [
+                        "I'm not feeling well...",
+                        "This is disappointing",
+                        "I miss my friends",
+                        "I need some comfort",
+                        "Things are tough right now"
+                    ],
+                    angry: [
+                        "This is unacceptable!",
+                        "I'm really frustrated",
+                        "This makes me angry",
+                        "I can't believe this!",
+                        "This needs to change!"
+                    ],
+                    surprised: [
+                        "Wow, I didn't expect that!",
+                        "This is surprising!",
+                        "Oh my goodness!",
+                        "I'm shocked!",
+                        "That's unexpected!"
+                    ],
+                    neutral: [
+                        "I see what you mean",
+                        "That makes sense",
+                        "Okay, understood",
+                        "I'm listening",
+                        "That's interesting"
+                    ],
+                    fearful: [
+                        "I'm worried about this",
+                        "This makes me anxious",
+                        "I'm concerned",
+                        "This is scary",
+                        "I feel nervous"
+                    ],
+                    disgusted: [
+                        "That's unpleasant",
+                        "I don't like this",
+                        "This is gross",
+                        "That's disgusting",
+                        "I can't stand this"
+                    ]
+                };
+
+                const emotionPhrases = phrases[emotion] || phrases.neutral;
+                return emotionPhrases[Math.floor(Math.random() * emotionPhrases.length)];
+            }
+
+            updateTimeline() {
+                const timeline = document.getElementById('emotionTimeline');
+                timeline.innerHTML = this.emotionHistory.map(item => `
+                    <div class="timeline-item">
+                        <div class="timeline-emoji">${this.emotions[item.emotion].emoji}</div>
+                        <div class="timeline-content">
+                            <div class="timeline-text">${item.text}</div>
+                            <div class="timeline-details">
+                                <span class="timeline-confidence">${item.confidence}% confidence</span>
+                                <span>${utils.getRelativeTime(item.timestamp)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateGraph() {
+                const canvas = document.getElementById('emotionGraph');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw simple line graph for demo
+                const emotions = ['happy', 'sad', 'angry', 'surprised', 'neutral'];
+                const points = 10;
+                const padding = 20;
+                const graphWidth = canvas.width - padding * 2;
+                const graphHeight = canvas.height - padding * 2;
+
+                ctx.beginPath();
+                ctx.strokeStyle = var(--primary-color);
+                ctx.lineWidth = 3;
+
+                for (let i = 0; i < points; i++) {
+                    const x = padding + (i / (points - 1)) * graphWidth;
+                    const y = padding + (Math.random() * graphHeight);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+
+                ctx.stroke();
+            }
+
+            updateMetrics() {
+                document.getElementById('detectionRate').textContent = '96%';
+                document.getElementById('responseTime').textContent = '42ms';
+                document.getElementById('emotionChanges').textContent = this.emotionChanges;
+            }
+
+            updateSessionTimer() {
+                if (this.isDetecting && this.sessionStartTime) {
+                    const updateTimer = () => {
+                        if (this.isDetecting) {
+                            const now = new Date();
+                            const diff = Math.floor((now - this.sessionStartTime) / 1000);
+                            const minutes = Math.floor(diff / 60);
+                            const seconds = diff % 60;
+                            
+                            document.getElementById('sessionTime').textContent = 
+                                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                            
+                            setTimeout(updateTimer, 1000);
+                        }
+                    };
+                    updateTimer();
+                }
+            }
+
+            playEmotionSound(emotion) {
+                // In a real app, this would play actual sound files
+                utils.log(`Playing sound for emotion: ${emotion}`);
+            }
+
+            exportData() {
+                const data = {
+                    emotionHistory: this.emotionHistory,
+                    exportDate: new Date().toISOString(),
+                    sessionStats: {
+                        totalDetections: this.emotionHistory.length,
+                        emotionChanges: this.emotionChanges,
+                        detectionTime: this.sessionStartTime ? 
+                            Math.floor((new Date() - this.sessionStartTime) / 1000) : 0
+                    }
+                };
+
+                utils.exportToJSON(data, 'emotion-detection-data.json');
+                this.showMessage('Emotion data exported successfully!', 'success');
+            }
+
+            generateMockHistory() {
+                // Generate some mock history for demo
+                const emotions = Object.keys(this.emotions);
+                const now = new Date();
+
+                for (let i = 0; i < 8; i++) {
+                    const emotion = emotions[Math.floor(Math.random() * emotions.length)];
+                    const confidence = Math.floor(Math.random() * 30) + 70;
+                    const timestamp = new Date(now - (i * 5 * 60 * 1000)); // 5 minutes apart
+
+                    this.emotionHistory.push({
+                        emotion: emotion,
+                        confidence: confidence,
+                        timestamp: timestamp,
+                        text: this.getRandomPhrase(emotion)
+                    });
+                }
+
+                this.updateTimeline();
+            }
+
+            showMessage(message, type = 'info') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `alert alert-${type}`;
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    z-index: 1000;
+                    min-width: 300px;
+                `;
+                messageDiv.textContent = message;
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize emotion detector when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.emotionDetector = new EmotionDetector();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Settings - Silent Speech Translator</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .language-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .language-header {
+            margin-bottom: 2rem;
+        }
+
+        .language-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .language-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .settings-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid #3f3f5e;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #3f3f5e;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .language-card {
+            background: var(--secondary-bg);
+            border: 2px solid #3f3f5e;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .language-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .language-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .language-flag {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .language-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .language-code {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .selected-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .voice-settings {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .voice-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .voice-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .voice-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .voice-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .voice-details {
+            flex: 1;
+        }
+
+        .voice-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .voice-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .voice-preview {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .voice-preview:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .slider-container {
+            margin: 1.5rem 0;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-label {
+            font-weight: 500;
+        }
+
+        .slider-value {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: var(--secondary-bg);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .preview-section {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .preview-text {
+            width: 100%;
+            min-height: 80px;
+            background: var(--card-bg);
+            border: 1px solid #3f3f5e;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .auto-translate {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--secondary-bg);
+            border: 1px solid #3f3f5e;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 3px;
+            background: var(--text-secondary);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+            background: white;
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #3f3f5e;
+        }
+
+        .detected-language {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .language-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .settings-actions {
+                flex-direction: column;
+            }
+
+            .preview-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-lips"></i>
+                <span>SilentSpeech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="history.html" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="language.html" class="nav-link active">
+                    <i class="fas fa-globe"></i>
+                    <span>Language</span>
+                </a>
+                <a href="training.html" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Training</span>
+                </a>
+                <a href="emotion.html" class="nav-link">
+                    <i class="fas fa-smile"></i>
+                    <span>Emotion</span>
+                </a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="language-container">
+            <!-- Header -->
+            <div class="language-header">
+                <h1 class="language-title">
+                    <i class="fas fa-globe"></i>
+                    Language & Voice Settings
+                </h1>
+                <p class="language-subtitle">
+                    Configure your preferred languages and voice output settings
+                </p>
+            </div>
+
+            <div class="settings-grid">
+                <!-- Input Language Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-sign-language"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Input Language</h2>
+                            <p class="section-description">Select the language you'll be speaking</p>
+                        </div>
+                    </div>
+
+                    <div class="language-grid" id="inputLanguageGrid">
+                        <!-- Languages will be populated by JavaScript -->
+                    </div>
+
+                    <div class="auto-translate">
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="autoDetectLanguage">
+                            <span class="toggle-slider"></span>
+                        </div>
+                        <label for="autoDetectLanguage">
+                            <strong>Auto-detect language</strong>
+                            <div class="section-description">Automatically detect spoken language</div>
+                        </label>
+                    </div>
+
+                    <div class="detected-language" id="detectedLanguage" style="display: none;">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Detected:</strong> <span id="currentLanguage">English</span>
+                        <div class="section-description">Based on your recent translations</div>
+                    </div>
+                </section>
+
+                <!-- Output Language Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Output Language</h2>
+                            <p class="section-description">Select the language for translated text</p>
+                        </div>
+                    </div>
+
+                    <div class="language-grid" id="outputLanguageGrid">
+                        <!-- Languages will be populated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Voice Settings Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Voice Settings</h2>
+                            <p class="section-description">Customize how translations are spoken</p>
+                        </div>
+                    </div>
+
+                    <div class="voice-settings">
+                        <!-- Voice Selection -->
+                        <div class="voice-option selected" data-voice="female1">
+                            <div class="voice-avatar">
+                                <i class="fas fa-female"></i>
+                            </div>
+                            <div class="voice-details">
+                                <div class="voice-name">Female Voice - Clear</div>
+                                <div class="voice-description">Natural and easy to understand</div>
+                            </div>
+                            <button class="voice-preview" data-voice="female1">
+                                <i class="fas fa-play"></i>
+                                Preview
+                            </button>
+                        </div>
+
+                        <div class="voice-option" data-voice="female2">
+                            <div class="voice-avatar">
+                                <i class="fas fa-female"></i>
+                            </div>
+                            <div class="voice-details">
+                                <div class="voice-name">Female Voice - Soft</div>
+                                <div class="voice-description">Gentle and calming tone</div>
+                            </div>
+                            <button class="voice-preview" data-voice="female2">
+                                <i class="fas fa-play"></i>
+                                Preview
+                            </button>
+                        </div>
+
+                        <div class="voice-option" data-voice="male1">
+                            <div class="voice-avatar">
+                                <i class="fas fa-male"></i>
+                            </div>
+                            <div class="voice-details">
+                                <div class="voice-name">Male Voice - Deep</div>
+                                <div class="voice-description">Authoritative and clear</div>
+                            </div>
+                            <button class="voice-preview" data-voice="male1">
+                                <i class="fas fa-play"></i>
+                                Preview
+                            </button>
+                        </div>
+
+                        <div class="voice-option" data-voice="male2">
+                            <div class="voice-avatar">
+                                <i class="fas fa-male"></i>
+                            </div>
+                            <div class="voice-details">
+                                <div class="voice-name">Male Voice - Friendly</div>
+                                <div class="voice-description">Warm and approachable</div>
+                            </div>
+                            <button class="voice-preview" data-voice="male2">
+                                <i class="fas fa-play"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Voice Parameters -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Speech Speed</span>
+                            <span class="slider-value" id="speedValue">Normal</span>
+                        </div>
+                        <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="speedSlider">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+                            <span>Slower</span>
+                            <span>Faster</span>
+                        </div>
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Voice Pitch</span>
+                            <span class="slider-value" id="pitchValue">Medium</span>
+                        </div>
+                        <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="pitchSlider">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+                            <span>Lower</span>
+                            <span>Higher</span>
+                        </div>
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Volume</span>
+                            <span class="slider-value" id="volumeValue">80%</span>
+                        </div>
+                        <input type="range" min="0" max="100" step="1" value="80" class="slider" id="volumeSlider">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+                            <span>Quiet</span>
+                            <span>Loud</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Translation Style Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Translation Style</h2>
+                            <p class="section-description">Customize how translations are formatted</p>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; gap: 1rem;">
+                        <label class="form-check">
+                            <input type="radio" name="translationStyle" value="formal" checked>
+                            <span>Formal Translation</span>
+                            <div class="section-description">Professional and precise language</div>
+                        </label>
+
+                        <label class="form-check">
+                            <input type="radio" name="translationStyle" value="casual">
+                            <span>Casual Translation</span>
+                            <div class="section-description">Everyday, conversational language</div>
+                        </label>
+
+                        <label class="form-check">
+                            <input type="radio" name="translationStyle" value="technical">
+                            <span>Technical Translation</span>
+                            <div class="section-description">Technical terms and precise terminology</div>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Preview Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-headphones"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Voice Preview</h2>
+                            <p class="section-description">Test your current voice settings</p>
+                        </div>
+                    </div>
+
+                    <div class="preview-section">
+                        <textarea class="preview-text" id="previewText" placeholder="Enter text to preview voice settings...">Hello! This is a preview of how your translations will sound with the current settings.</textarea>
+                        <div class="preview-actions">
+                            <button class="btn btn-primary" id="previewVoiceBtn">
+                                <i class="fas fa-play"></i>
+                                Play Preview
+                            </button>
+                            <button class="btn btn-secondary" id="stopPreviewBtn">
+                                <i class="fas fa-stop"></i>
+                                Stop
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="settings-actions">
+                <button class="btn btn-secondary" id="resetBtn">
+                    <i class="fas fa-undo"></i>
+                    Reset to Defaults
+                </button>
+                <button class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        class LanguageManager {
+            constructor() {
+                this.settings = {
+                    inputLanguage: 'en',
+                    outputLanguage: 'en',
+                    voice: 'female1',
+                    speed: 1,
+                    pitch: 1,
+                    volume: 80,
+                    translationStyle: 'formal',
+                    autoDetect: true
+                };
+
+                this.languages = [
+                    { code: 'en', name: 'English', flag: '🇺🇸', native: 'English' },
+                    { code: 'hi', name: 'Hindi', flag: '🇮🇳', native: 'हिन्दी' },
+                    { code: 'es', name: 'Spanish', flag: '🇪🇸', native: 'Español' },
+                    { code: 'fr', name: 'French', flag: '🇫🇷', native: 'Français' },
+                    { code: 'de', name: 'German', flag: '🇩🇪', native: 'Deutsch' },
+                    { code: 'it', name: 'Italian', flag: '🇮🇹', native: 'Italiano' },
+                    { code: 'pt', name: 'Portuguese', flag: '🇵🇹', native: 'Português' },
+                    { code: 'ru', name: 'Russian', flag: '🇷🇺', native: 'Русский' },
+                    { code: 'ja', name: 'Japanese', flag: '🇯🇵', native: '日本語' },
+                    { code: 'ko', name: 'Korean', flag: '🇰🇷', native: '한국어' },
+                    { code: 'zh', name: 'Chinese', flag: '🇨🇳', native: '中文' },
+                    { code: 'ar', name: 'Arabic', flag: '🇸🇦', native: 'العربية' }
+                ];
+
+                this.init();
+            }
+
+            init() {
+                this.loadSettings();
+                this.renderLanguages();
+                this.bindEvents();
+                this.updateSliders();
+            }
+
+            loadSettings() {
+                const saved = utils.getItem('languageSettings');
+                if (saved) {
+                    this.settings = { ...this.settings, ...saved };
+                }
+            }
+
+            saveSettings() {
+                utils.setItem('languageSettings', this.settings);
+                utils.log('Language settings saved', this.settings);
+            }
+
+            renderLanguages() {
+                const inputGrid = document.getElementById('inputLanguageGrid');
+                const outputGrid = document.getElementById('outputLanguageGrid');
+
+                inputGrid.innerHTML = this.languages.map(lang => 
+                    this.renderLanguageCard(lang, 'input')
+                ).join('');
+
+                outputGrid.innerHTML = this.languages.map(lang => 
+                    this.renderLanguageCard(lang, 'output')
+                ).join('');
+
+                // Update auto-detect toggle
+                document.getElementById('autoDetectLanguage').checked = this.settings.autoDetect;
+                this.toggleDetectedLanguage();
+            }
+
+            renderLanguageCard(lang, type) {
+                const isSelected = type === 'input' ? 
+                    lang.code === this.settings.inputLanguage : 
+                    lang.code === this.settings.outputLanguage;
+
+                return `
+                    <div class="language-card ${isSelected ? 'selected' : ''}" 
+                         data-code="${lang.code}" 
+                         data-type="${type}">
+                        ${isSelected ? '<div class="selected-badge">Selected</div>' : ''}
+                        <div class="language-flag">${lang.flag}</div>
+                        <div class="language-name">${lang.name}</div>
+                        <div class="language-code">${lang.native}</div>
+                    </div>
+                `;
+            }
+
+            bindEvents() {
+                // Language selection
+                document.querySelectorAll('.language-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        const code = e.currentTarget.dataset.code;
+                        const type = e.currentTarget.dataset.type;
+                        this.selectLanguage(code, type);
+                    });
+                });
+
+                // Voice selection
+                document.querySelectorAll('.voice-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        if (!e.target.matches('.voice-preview')) {
+                            this.selectVoice(e.currentTarget.dataset.voice);
+                        }
+                    });
+                });
+
+                // Voice preview buttons
+                document.querySelectorAll('.voice-preview').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.previewVoice(e.currentTarget.dataset.voice);
+                    });
+                });
+
+                // Sliders
+                document.getElementById('speedSlider').addEventListener('input', (e) => {
+                    this.settings.speed = parseFloat(e.target.value);
+                    this.updateSpeedValue();
+                });
+
+                document.getElementById('pitchSlider').addEventListener('input', (e) => {
+                    this.settings.pitch = parseFloat(e.target.value);
+                    this.updatePitchValue();
+                });
+
+                document.getElementById('volumeSlider').addEventListener('input', (e) => {
+                    this.settings.volume = parseInt(e.target.value);
+                    this.updateVolumeValue();
+                });
+
+                // Translation style
+                document.querySelectorAll('input[name="translationStyle"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        this.settings.translationStyle = e.target.value;
+                    });
+                });
+
+                // Auto-detect toggle
+                document.getElementById('autoDetectLanguage').addEventListener('change', (e) => {
+                    this.settings.autoDetect = e.target.checked;
+                    this.toggleDetectedLanguage();
+                });
+
+                // Preview voice
+                document.getElementById('previewVoiceBtn').addEventListener('click', () => {
+                    this.previewCurrentSettings();
+                });
+
+                document.getElementById('stopPreviewBtn').addEventListener('click', () => {
+                    this.stopPreview();
+                });
+
+                // Action buttons
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.resetToDefaults();
+                });
+
+                document.getElementById('saveBtn').addEventListener('click', () => {
+                    this.saveSettings();
+                    this.showSuccess('Settings saved successfully!');
+                });
+            }
+
+            selectLanguage(code, type) {
+                if (type === 'input') {
+                    this.settings.inputLanguage = code;
+                } else {
+                    this.settings.outputLanguage = code;
+                }
+
+                // Update UI
+                document.querySelectorAll(`.language-card[data-type="${type}"]`).forEach(card => {
+                    card.classList.remove('selected');
+                });
+                document.querySelector(`.language-card[data-code="${code}"][data-type="${type}"]`).classList.add('selected');
+
+                utils.log(`${type} language changed to: ${code}`);
+            }
+
+            selectVoice(voice) {
+                this.settings.voice = voice;
+
+                // Update UI
+                document.querySelectorAll('.voice-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                document.querySelector(`.voice-option[data-voice="${voice}"]`).classList.add('selected');
+
+                utils.log('Voice changed to:', voice);
+            }
+
+            previewVoice(voice) {
+                const previewText = "This is a preview of the selected voice.";
+                this.speakText(previewText, { voice: voice });
+            }
+
+            previewCurrentSettings() {
+                const text = document.getElementById('previewText').value || 
+                            "Hello! This is a preview of how your translations will sound.";
+                
+                this.speakText(text, this.settings);
+            }
+
+            speakText(text, settings = {}) {
+                if (!('speechSynthesis' in window)) {
+                    this.showError('Text-to-speech is not supported in your browser');
+                    return;
+                }
+
+                // Stop any ongoing speech
+                speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Apply settings
+                utterance.rate = settings.speed || this.settings.speed;
+                utterance.pitch = settings.pitch || this.settings.pitch;
+                utterance.volume = (settings.volume || this.settings.volume) / 100;
+
+                // Note: In a real app, you would set the voice based on available voices
+                // utterance.voice = availableVoices.find(v => v.name.includes(settings.voice));
+
+                speechSynthesis.speak(utterance);
+            }
+
+            stopPreview() {
+                speechSynthesis.cancel();
+            }
+
+            updateSliders() {
+                document.getElementById('speedSlider').value = this.settings.speed;
+                document.getElementById('pitchSlider').value = this.settings.pitch;
+                document.getElementById('volumeSlider').value = this.settings.volume;
+
+                this.updateSpeedValue();
+                this.updatePitchValue();
+                this.updateVolumeValue();
+
+                // Set translation style radio
+                document.querySelector(`input[name="translationStyle"][value="${this.settings.translationStyle}"]`).checked = true;
+            }
+
+            updateSpeedValue() {
+                const value = this.settings.speed;
+                let label = 'Normal';
+                if (value < 0.8) label = 'Slow';
+                if (value > 1.2) label = 'Fast';
+                if (value > 1.5) label = 'Very Fast';
+                
+                document.getElementById('speedValue').textContent = label;
+            }
+
+            updatePitchValue() {
+                const value = this.settings.pitch;
+                let label = 'Medium';
+                if (value < 0.8) label = 'Low';
+                if (value > 1.2) label = 'High';
+                if (value > 1.5) label = 'Very High';
+                
+                document.getElementById('pitchValue').textContent = label;
+            }
+
+            updateVolumeValue() {
+                document.getElementById('volumeValue').textContent = `${this.settings.volume}%`;
+            }
+
+            toggleDetectedLanguage() {
+                const detectedDiv = document.getElementById('detectedLanguage');
+                if (this.settings.autoDetect) {
+                    detectedDiv.style.display = 'block';
+                    // Simulate language detection
+                    this.simulateLanguageDetection();
+                } else {
+                    detectedDiv.style.display = 'none';
+                }
+            }
+
+            simulateLanguageDetection() {
+                // In real app, this would analyze recent translations
+                const detectedLang = this.languages.find(lang => lang.code === this.settings.inputLanguage);
+                if (detectedLang) {
+                    document.getElementById('currentLanguage').textContent = detectedLang.name;
+                }
+            }
+
+            resetToDefaults() {
+                if (confirm('Are you sure you want to reset all language settings to defaults?')) {
+                    this.settings = {
+                        inputLanguage: 'en',
+                        outputLanguage: 'en',
+                        voice: 'female1',
+                        speed: 1,
+                        pitch: 1,
+                        volume: 80,
+                        translationStyle: 'formal',
+                        autoDetect: true
+                    };
+
+                    this.saveSettings();
+                    this.updateSliders();
+                    this.renderLanguages();
+                    this.showSuccess('Settings reset to defaults');
+                }
+            }
+
+            showSuccess(message) {
+                utils.log('Success:', message);
+                // You could add a toast notification here
+                alert(message);
+            }
+
+            showError(message) {
+                utils.log('Error:', message);
+                alert(`Error: ${message}`);
+            }
+        }
+
+        // Initialize language manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.languageManager = new LanguageManager();
+        });
+    </script>
+</body>
+</html>

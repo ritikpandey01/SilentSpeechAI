@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation History - Silent Speech Translator</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .history-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .history-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .history-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: var(--card-bg);
+            border: 1px solid #3f3f5e;
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 0.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: calc(var(--border-radius) - 4px);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border: 1px solid #3f3f5e;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .history-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .history-text {
+            font-size: 1.125rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+        }
+
+        .action-btn.starred {
+            color: var(--warning-color);
+        }
+
+        .history-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .history-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .history-timestamp {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        .batch-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .selected-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .history-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .history-controls {
+                justify-content: space-between;
+            }
+
+            .search-box {
+                min-width: auto;
+                flex: 1;
+            }
+
+            .history-item-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .history-actions {
+                align-self: flex-end;
+            }
+
+            .history-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-lips"></i>
+                <span>SilentSpeech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="history.html" class="nav-link active">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="language.html" class="nav-link">
+                    <i class="fas fa-globe"></i>
+                    <span>Language</span>
+                </a>
+                <a href="training.html" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Training</span>
+                </a>
+                <a href="emotion.html" class="nav-link">
+                    <i class="fas fa-smile"></i>
+                    <span>Emotion</span>
+                </a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="history-container">
+            <!-- Header -->
+            <div class="history-header">
+                <h1 class="history-title">
+                    <i class="fas fa-history"></i>
+                    Translation History
+                </h1>
+                <div class="history-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search translations..." id="searchInput">
+                    </div>
+                    <button class="btn btn-danger" id="clearAllBtn">
+                        <i class="fas fa-trash"></i>
+                        Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="history-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTranslations">0</div>
+                    <div class="stat-label">Total Translations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="averageConfidence">0%</div>
+                    <div class="stat-label">Average Confidence</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayCount">0</div>
+                    <div class="stat-label">Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="starredCount">0</div>
+                    <div class="stat-label">Starred</div>
+                </div>
+            </div>
+
+            <!-- Batch Actions -->
+            <div class="batch-actions" id="batchActions" style="display: none;">
+                <span class="selected-count" id="selectedCount">0 selected</span>
+                <button class="btn btn-secondary" id="batchStarBtn">
+                    <i class="fas fa-star"></i>
+                    Star Selected
+                </button>
+                <button class="btn btn-secondary" id="batchDeleteBtn">
+                    <i class="fas fa-trash"></i>
+                    Delete Selected
+                </button>
+                <button class="btn btn-secondary" id="clearSelectionBtn">
+                    <i class="fas fa-times"></i>
+                    Clear Selection
+                </button>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="starred">Starred</button>
+                <button class="filter-tab" data-filter="today">Today</button>
+                <button class="filter-tab" data-filter="high-confidence">High Confidence</button>
+                <button class="filter-tab" data-filter="with-emotion">With Emotion</button>
+            </div>
+
+            <!-- History List -->
+            <div class="history-list" id="historyList">
+                <!-- History items will be dynamically inserted here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="empty-text">No translations yet</div>
+                <p>Your translation history will appear here after you use the lip reading feature.</p>
+                <button class="btn btn-primary mt-3" onclick="window.location.href='../index.html'">
+                    <i class="fas fa-microphone"></i>
+                    Start Translating
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        class HistoryManager {
+            constructor() {
+                this.history = [];
+                this.filteredHistory = [];
+                this.currentFilter = 'all';
+                this.searchQuery = '';
+                this.selectedItems = new Set();
+                
+                this.init();
+            }
+
+            init() {
+                this.loadHistory();
+                this.bindEvents();
+                this.render();
+                this.updateStats();
+            }
+
+            loadHistory() {
+                this.history = utils.getItem('silentSpeechHistory', []);
+                
+                // Add some mock data if empty (for demo)
+                if (this.history.length === 0) {
+                    this.history = this.generateMockHistory();
+                    this.saveHistory();
+                }
+            }
+
+            generateMockHistory() {
+                const mockData = [
+                    {
+                        id: 1,
+                        text: "Hello, how are you doing today?",
+                        emotion: "happy",
+                        confidence: 92,
+                        timestamp: new Date(Date.now() - 300000).toISOString(), // 5 minutes ago
+                        starred: true
+                    },
+                    {
+                        id: 2,
+                        text: "I need help with my computer",
+                        emotion: "neutral",
+                        confidence: 78,
+                        timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
+                        starred: false
+                    },
+                    {
+                        id: 3,
+                        text: "Where is the nearest hospital?",
+                        emotion: "concerned",
+                        confidence: 85,
+                        timestamp: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+                        starred: true
+                    },
+                    {
+                        id: 4,
+                        text: "Thank you for your assistance",
+                        emotion: "grateful",
+                        confidence: 95,
+                        timestamp: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+                        starred: false
+                    },
+                    {
+                        id: 5,
+                        text: "Can you speak more slowly please?",
+                        emotion: "confused",
+                        confidence: 67,
+                        timestamp: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+                        starred: false
+                    }
+                ];
+                return mockData;
+            }
+
+            saveHistory() {
+                utils.setItem('silentSpeechHistory', this.history);
+            }
+
+            bindEvents() {
+                // Filter tabs
+                document.querySelectorAll('.filter-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        this.setFilter(e.target.dataset.filter);
+                    });
+                });
+
+                // Search input
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.searchQuery = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+
+                // Clear all button
+                document.getElementById('clearAllBtn').addEventListener('click', () => {
+                    this.clearAll();
+                });
+
+                // Batch actions
+                document.getElementById('batchStarBtn').addEventListener('click', () => {
+                    this.batchStar();
+                });
+
+                document.getElementById('batchDeleteBtn').addEventListener('click', () => {
+                    this.batchDelete();
+                });
+
+                document.getElementById('clearSelectionBtn').addEventListener('click', () => {
+                    this.clearSelection();
+                });
+            }
+
+            setFilter(filter) {
+                this.currentFilter = filter;
+                
+                // Update active tab
+                document.querySelectorAll('.filter-tab').forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.filter === filter);
+                });
+
+                this.applyFilters();
+            }
+
+            applyFilters() {
+                let filtered = this.history;
+
+                // Apply search filter
+                if (this.searchQuery) {
+                    filtered = filtered.filter(item => 
+                        item.text.toLowerCase().includes(this.searchQuery)
+                    );
+                }
+
+                // Apply category filter
+                switch (this.currentFilter) {
+                    case 'starred':
+                        filtered = filtered.filter(item => item.starred);
+                        break;
+                    case 'today':
+                        const today = new Date().toDateString();
+                        filtered = filtered.filter(item => 
+                            new Date(item.timestamp).toDateString() === today
+                        );
+                        break;
+                    case 'high-confidence':
+                        filtered = filtered.filter(item => item.confidence >= 80);
+                        break;
+                    case 'with-emotion':
+                        filtered = filtered.filter(item => 
+                            item.emotion && item.emotion !== 'neutral'
+                        );
+                        break;
+                }
+
+                this.filteredHistory = filtered;
+                this.render();
+            }
+
+            render() {
+                const historyList = document.getElementById('historyList');
+                const emptyState = document.getElementById('emptyState');
+
+                if (this.filteredHistory.length === 0) {
+                    historyList.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                historyList.style.display = 'flex';
+                emptyState.style.display = 'none';
+
+                historyList.innerHTML = this.filteredHistory.map(item => this.renderHistoryItem(item)).join('');
+                
+                // Add event listeners to new items
+                this.attachItemEventListeners();
+            }
+
+            renderHistoryItem(item) {
+                const isSelected = this.selectedItems.has(item.id);
+                const emotionIcon = this.getEmotionIcon(item.emotion);
+                const confidenceColor = this.getConfidenceColor(item.confidence);
+
+                return `
+                    <div class="history-item ${isSelected ? 'selected' : ''}" data-id="${item.id}">
+                        <div class="history-item-header">
+                            <div class="history-text">"${item.text}"</div>
+                            <div class="history-actions">
+                                <button class="action-btn ${item.starred ? 'starred' : ''}" data-action="star" title="Star">
+                                    <i class="fas fa-star"></i>
+                                </button>
+                                <button class="action-btn" data-action="speak" title="Speak">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <button class="action-btn" data-action="copy" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="action-btn" data-action="delete" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <input type="checkbox" class="select-checkbox" ${isSelected ? 'checked' : ''} style="margin-left: 0.5rem;">
+                            </div>
+                        </div>
+                        <div class="history-meta">
+                            <div class="history-tags">
+                                <span class="badge badge-primary">
+                                    <i class="fas ${emotionIcon}"></i>
+                                    ${utils.capitalizeFirst(item.emotion)}
+                                </span>
+                                <span class="badge" style="background: ${confidenceColor.background}; color: ${confidenceColor.color}; border-color: ${confidenceColor.color}">
+                                    <i class="fas fa-chart-line"></i>
+                                    ${item.confidence}% Confidence
+                                </span>
+                            </div>
+                            <div class="history-timestamp">
+                                ${utils.getRelativeTime(item.timestamp)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            attachItemEventListeners() {
+                document.querySelectorAll('.history-item').forEach(item => {
+                    const id = parseInt(item.dataset.id);
+                    
+                    // Star button
+                    item.querySelector('[data-action="star"]').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.toggleStar(id);
+                    });
+
+                    // Speak button
+                    item.querySelector('[data-action="speak"]').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.speakItem(id);
+                    });
+
+                    // Copy button
+                    item.querySelector('[data-action="copy"]').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.copyItem(id);
+                    });
+
+                    // Delete button
+                    item.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.deleteItem(id);
+                    });
+
+                    // Selection checkbox
+                    item.querySelector('.select-checkbox').addEventListener('change', (e) => {
+                        e.stopPropagation();
+                        this.toggleSelection(id, e.target.checked);
+                    });
+
+                    // Item click for selection
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.matches('button, input')) {
+                            this.toggleSelection(id, !this.selectedItems.has(id));
+                        }
+                    });
+                });
+            }
+
+            getEmotionIcon(emotion) {
+                const icons = {
+                    'happy': 'fa-smile',
+                    'sad': 'fa-frown',
+                    'angry': 'fa-angry',
+                    'surprised': 'fa-surprise',
+                    'neutral': 'fa-meh',
+                    'confused': 'fa-question-circle',
+                    'grateful': 'fa-heart',
+                    'concerned': 'fa-exclamation-circle'
+                };
+                return icons[emotion] || 'fa-meh';
+            }
+
+            getConfidenceColor(confidence) {
+                if (confidence >= 80) {
+                    return { background: 'rgba(16, 185, 129, 0.2)', color: '#10b981' };
+                } else if (confidence >= 60) {
+                    return { background: 'rgba(245, 158, 11, 0.2)', color: '#f59e0b' };
+                } else {
+                    return { background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' };
+                }
+            }
+
+            toggleStar(id) {
+                const item = this.history.find(h => h.id === id);
+                if (item) {
+                    item.starred = !item.starred;
+                    this.saveHistory();
+                    this.applyFilters();
+                    this.updateStats();
+                }
+            }
+
+            speakItem(id) {
+                const item = this.history.find(h => h.id === id);
+                if (item && 'speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(item.text);
+                    speechSynthesis.speak(utterance);
+                }
+            }
+
+            async copyItem(id) {
+                const item = this.history.find(h => h.id === id);
+                if (item) {
+                    try {
+                        await navigator.clipboard.writeText(item.text);
+                        utils.log('Text copied to clipboard');
+                    } catch (error) {
+                        console.error('Failed to copy text:', error);
+                    }
+                }
+            }
+
+            deleteItem(id) {
+                if (confirm('Are you sure you want to delete this translation?')) {
+                    this.history = this.history.filter(h => h.id !== id);
+                    this.selectedItems.delete(id);
+                    this.saveHistory();
+                    this.applyFilters();
+                    this.updateStats();
+                    this.updateBatchActions();
+                }
+            }
+
+            toggleSelection(id, selected) {
+                if (selected) {
+                    this.selectedItems.add(id);
+                } else {
+                    this.selectedItems.delete(id);
+                }
+                
+                // Update UI
+                const item = document.querySelector(`[data-id="${id}"]`);
+                if (item) {
+                    item.classList.toggle('selected', selected);
+                    item.querySelector('.select-checkbox').checked = selected;
+                }
+                
+                this.updateBatchActions();
+            }
+
+            clearSelection() {
+                this.selectedItems.clear();
+                document.querySelectorAll('.history-item').forEach(item => {
+                    item.classList.remove('selected');
+                    item.querySelector('.select-checkbox').checked = false;
+                });
+                this.updateBatchActions();
+            }
+
+            batchStar() {
+                this.selectedItems.forEach(id => {
+                    const item = this.history.find(h => h.id === id);
+                    if (item) item.starred = true;
+                });
+                this.saveHistory();
+                this.applyFilters();
+                this.clearSelection();
+            }
+
+            batchDelete() {
+                if (confirm(`Are you sure you want to delete ${this.selectedItems.size} items?`)) {
+                    this.history = this.history.filter(h => !this.selectedItems.has(h.id));
+                    this.saveHistory();
+                    this.applyFilters();
+                    this.updateStats();
+                    this.clearSelection();
+                }
+            }
+
+            updateBatchActions() {
+                const batchActions = document.getElementById('batchActions');
+                const selectedCount = document.getElementById('selectedCount');
+                
+                if (this.selectedItems.size > 0) {
+                    batchActions.style.display = 'flex';
+                    selectedCount.textContent = `${this.selectedItems.size} selected`;
+                } else {
+                    batchActions.style.display = 'none';
+                }
+            }
+
+            clearAll() {
+                if (confirm('Are you sure you want to clear all translation history? This action cannot be undone.')) {
+                    this.history = [];
+                    this.selectedItems.clear();
+                    this.saveHistory();
+                    this.applyFilters();
+                    this.updateStats();
+                    this.updateBatchActions();
+                }
+            }
+
+            updateStats() {
+                const total = this.history.length;
+                const today = new Date().toDateString();
+                const todayCount = this.history.filter(item => 
+                    new Date(item.timestamp).toDateString() === today
+                ).length;
+                const starredCount = this.history.filter(item => item.starred).length;
+                const avgConfidence = total > 0 ? 
+                    Math.round(this.history.reduce((sum, item) => sum + item.confidence, 0) / total) : 0;
+
+                document.getElementById('totalTranslations').textContent = total;
+                document.getElementById('todayCount').textContent = todayCount;
+                document.getElementById('starredCount').textContent = starredCount;
+                document.getElementById('averageConfidence').textContent = `${avgConfidence}%`;
+            }
+        }
+
+        // Initialize history manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.historyManager = new HistoryManager();
+        });
+    </script>
+</body>
+</html>

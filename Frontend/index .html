@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Speech Translator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-lips"></i>
+                <span>SilentSpeech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="pages/history.html" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="pages/language.html" class="nav-link">
+                    <i class="fas fa-globe"></i>
+                    <span>Language</span>
+                </a>
+                <a href="pages/training.html" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Training</span>
+                </a>
+                <a href="pages/emotion.html" class="nav-link">
+                    <i class="fas fa-smile"></i>
+                    <span>Emotion</span>
+                </a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content - Home Page -->
+    <main class="main-content">
+        <div class="home-container">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <span class="status-item">
+                        <i class="fas fa-wifi"></i>
+                        Online
+                    </span>
+                    <span class="status-item">
+                        <i class="fas fa-bolt"></i>
+                        Real-time
+                    </span>
+                </div>
+                <div class="status-right">
+                    <span class="battery">
+                        <i class="fas fa-battery-three-quarters"></i>
+                        92%
+                    </span>
+                </div>
+            </div>
+
+            <!-- Main Camera Section -->
+            <div class="camera-section">
+                <div class="camera-header">
+                    <h1><i class="fas fa-lips"></i> Live Lip Reading</h1>
+                    <div class="camera-controls">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </button>
+                    </div>
+                </div>
+
+                <div class="camera-container">
+                    <div class="camera-preview">
+                        <div class="face-guide">
+                            <div class="face-circle">
+                                <div class="face-landmarks">
+                                    <div class="eye left-eye"></div>
+                                    <div class="eye right-eye"></div>
+                                    <div class="mouth"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="camera-overlay">
+                            <div class="recording-indicator">
+                                <div class="rec-dot"></div>
+                                <span>REC</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confidence Indicator -->
+                <div class="confidence-indicator">
+                    <div class="confidence-header">
+                        <span>Confidence Level</span>
+                        <span class="confidence-value">85%</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: 85%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Translation Output -->
+            <div class="translation-section">
+                <div class="translation-card">
+                    <div class="card-header">
+                        <i class="fas fa-language"></i>
+                        <h3>Translated Text</h3>
+                        <div class="emotion-tag">
+                            <i class="fas fa-smile"></i>
+                            Happy
+                        </div>
+                    </div>
+                    <div class="translated-text">
+                        "Hello, I need help with this project today. Can you assist me with the implementation?"
+                    </div>
+                    <div class="translation-actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-volume-up"></i>
+                            Speak Output
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-copy"></i>
+                            Copy Text
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-star"></i>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Suggestions -->
+            <div class="suggestions-section">
+                <h3><i class="fas fa-lightbulb"></i> Smart Suggestions</h3>
+                <div class="suggestions-grid">
+                    <div class="suggestion-chip">I need help with...</div>
+                    <div class="suggestion-chip">Where is the...</div>
+                    <div class="suggestion-chip">Thank you</div>
+                    <div class="suggestion-chip">I want to order...</div>
+                    <div class="suggestion-chip">Can you please...</div>
+                    <div class="suggestion-chip">Emergency help</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="action-btn large-btn" id="startSpeaking">
+                    <i class="fas fa-microphone"></i>
+                    <span>Start Speaking</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

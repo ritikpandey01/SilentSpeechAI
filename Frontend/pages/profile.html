@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - Silent Speech Translator</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            margin-bottom: 2rem;
+        }
+
+        .profile-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid #3f3f5e;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #3f3f5e;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Profile Sidebar */
+        .profile-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .user-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid #3f3f5e;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--secondary-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary-color);
+            border: 2px solid var(--secondary-bg);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .user-stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .quick-actions {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border: 1px solid #3f3f5e;
+        }
+
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .action-item:hover {
+            background: var(--secondary-bg);
+        }
+
+        .action-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .action-item.active .action-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #3f3f5e;
+        }
+
+        /* Display Settings */
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .theme-option {
+            background: var(--secondary-bg);
+            border: 2px solid #3f3f5e;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .theme-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .theme-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .theme-preview {
+            width: 60px;
+            height: 40px;
+            border-radius: 8px;
+            margin: 0 auto 0.75rem;
+            border: 2px solid #3f3f5e;
+        }
+
+        .theme-dark { background: #1a1a2e; }
+        .theme-light { background: #f8fafc; border: 2px solid #e2e8f0; }
+        .theme-blue { background: #1e3a8a; }
+        .theme-green { background: #065f46; }
+
+        .theme-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .theme-description {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        /* Haptic Settings */
+        .haptic-settings {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .haptic-pattern {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .haptic-pattern:hover {
+            border-color: var(--primary-color);
+        }
+
+        .haptic-pattern.selected {
+            border-color: var(--primary-color);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .haptic-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .haptic-details {
+            flex: 1;
+        }
+
+        .haptic-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .haptic-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .haptic-test {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .haptic-test:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Privacy Settings */
+        .privacy-options {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .privacy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+        }
+
+        .privacy-info {
+            flex: 1;
+        }
+
+        .privacy-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .privacy-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Notification Settings */
+        .notification-categories {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .notification-category {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-name {
+            font-weight: 600;
+        }
+
+        .notification-items {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border-radius: calc(var(--border-radius) - 4px);
+        }
+
+        .notification-info {
+            flex: 1;
+        }
+
+        .notification-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            border: 2px solid var(--error-color);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .danger-actions {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .danger-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--error-color);
+        }
+
+        .danger-info {
+            flex: 1;
+        }
+
+        .danger-name {
+            font-weight: 500;
+            color: var(--error-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .danger-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--secondary-bg);
+            border: 1px solid #3f3f5e;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 3px;
+            background: var(--text-secondary);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-lips"></i>
+                <span>SilentSpeech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="history.html" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="language.html" class="nav-link">
+                    <i class="fas fa-globe"></i>
+                    <span>Language</span>
+                </a>
+                <a href="training.html" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Training</span>
+                </a>
+                <a href="emotion.html" class="nav-link">
+                    <i class="fas fa-smile"></i>
+                    <span>Emotion</span>
+                </a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="profile-container">
+            <!-- Header -->
+            <div class="profile-header">
+                <h1 class="profile-title">
+                    <i class="fas fa-user-cog"></i>
+                    Profile Settings
+                </h1>
+                <p class="profile-subtitle">
+                    Manage your account, preferences, and application settings
+                </p>
+            </div>
+
+            <div class="profile-grid">
+                <!-- Left Sidebar -->
+                <div class="profile-sidebar">
+                    <!-- User Card -->
+                    <div class="user-card">
+                        <div class="user-avatar">
+                            <span>U</span>
+                            <div class="avatar-upload" title="Change avatar">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        <div class="user-name">John Doe</div>
+                        <div class="user-email">john.doe@example.com</div>
+                        <div class="user-stats">
+                            <div class="user-stat">
+                                <div class="stat-number">87%</div>
+                                <div class="stat-label">Accuracy</div>
+                            </div>
+                            <div class="user-stat">
+                                <div class="stat-number">142</div>
+                                <div class="stat-label">Translations</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <div class="action-list">
+                            <a href="#personal" class="action-item active" data-section="personal">
+                                <div class="action-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <span>Personal Info</span>
+                            </a>
+                            <a href="#display" class="action-item" data-section="display">
+                                <div class="action-icon">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <span>Display</span>
+                            </a>
+                            <a href="#haptic" class="action-item" data-section="haptic">
+                                <div class="action-icon">
+                                    <i class="fas fa-vibration"></i>
+                                </div>
+                                <span>Haptic Feedback</span>
+                            </a>
+                            <a href="#notifications" class="action-item" data-section="notifications">
+                                <div class="action-icon">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <span>Notifications</span>
+                            </a>
+                            <a href="#privacy" class="action-item" data-section="privacy">
+                                <div class="action-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <span>Privacy & Security</span>
+                            </a>
+                            <a href="#danger" class="action-item" data-section="danger">
+                                <div class="action-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <span>Danger Zone</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content -->
+                <div class="profile-content">
+                    <!-- Personal Information Section -->
+                    <section id="personal" class="profile-section active-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Personal Information</h2>
+                                <p class="section-description">Update your personal details and account information</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-input" value="John" id="firstName">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-input" value="Doe" id="lastName">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-input" value="john.doe@example.com" id="email">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-input" value="+1 (555) 123-4567" id="phone">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-textarea" id="bio" placeholder="Tell us about yourself...">Technology enthusiast and accessibility advocate. Passionate about making communication easier for everyone.</textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn btn-secondary" id="resetPersonalBtn">
+                                    <i class="fas fa-undo"></i>
+                                    Reset
+                                </button>
+                                <button class="btn btn-primary" id="savePersonalBtn">
+                                    <i class="fas fa-save"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Display Settings Section -->
+                    <section id="display" class="profile-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Display Settings</h2>
+                                <p class="section-description">Customize the appearance of the application</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Theme</label>
+                                <div class="theme-selector">
+                                    <div class="theme-option selected" data-theme="dark">
+                                        <div class="theme-preview theme-dark"></div>
+                                        <div class="theme-name">Dark</div>
+                                        <div class="theme-description">Easy on the eyes</div>
+                                    </div>
+                                    <div class="theme-option" data-theme="light">
+                                        <div class="theme-preview theme-light"></div>
+                                        <div class="theme-name">Light</div>
+                                        <div class="theme-description">Bright and clear</div>
+                                    </div>
+                                    <div class="theme-option" data-theme="blue">
+                                        <div class="theme-preview theme-blue"></div>
+                                        <div class="theme-name">Blue</div>
+                                        <div class="theme-description">Calming blue tones</div>
+                                    </div>
+                                    <div class="theme-option" data-theme="green">
+                                        <div class="theme-preview theme-green"></div>
+                                        <div class="theme-name">Green</div>
+                                        <div class="theme-description">Natural and fresh</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Text Size</label>
+                                <input type="range" min="12" max="24" value="16" class="slider" id="textSizeSlider">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-secondary);">
+                                    <span>Small</span>
+                                    <span>Large</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Animation</label>
+                                <div style="display: grid; gap: 0.5rem;">
+                                    <label class="form-check">
+                                        <input type="checkbox" id="reduceMotion">
+                                        <span>Reduce motion and animations</span>
+                                    </label>
+                                    <label class="form-check">
+                                        <input type="checkbox" id="smoothScrolling" checked>
+                                        <span>Enable smooth scrolling</span>
+                                    </label>
+                                    <label class="form-check">
+                                        <input type="checkbox" id="hoverEffects" checked>
+                                        <span>Show hover effects</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn btn-primary" id="applyDisplayBtn">
+                                    <i class="fas fa-check"></i>
+                                    Apply Changes
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Haptic Feedback Section -->
+                    <section id="haptic" class="profile-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-vibration"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Haptic Feedback</h2>
+                                <p class="section-description">Customize vibration patterns for different actions</p>
+                            </div>
+                        </div>
+
+                        <div class="haptic-settings">
+                            <div class="haptic-pattern selected">
+                                <div class="haptic-icon">
+                                    <i class="fas fa-microphone"></i>
+                                </div>
+                                <div class="haptic-details">
+                                    <div class="haptic-name">Start Recording</div>
+                                    <div class="haptic-description">Short vibration when recording starts</div>
+                                </div>
+                                <button class="haptic-test">Test</button>
+                            </div>
+
+                            <div class="haptic-pattern">
+                                <div class="haptic-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="haptic-details">
+                                    <div class="haptic-name">Success</div>
+                                    <div class="haptic-description">Double vibration for successful actions</div>
+                                </div>
+                                <button class="haptic-test">Test</button>
+                            </div>
+
+                            <div class="haptic-pattern">
+                                <div class="haptic-icon">
+                                    <i class="fas fa-exclamation"></i>
+                                </div>
+                                <div class="haptic-details">
+                                    <div class="haptic-name">Error</div>
+                                    <div class="haptic-description">Long vibration for errors</div>
+                                </div>
+                                <button class="haptic-test">Test</button>
+                            </div>
+
+                            <div class="haptic-pattern">
+                                <div class="haptic-icon">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <div class="haptic-details">
+                                    <div class="haptic-name">Notification</div>
+                                    <div class="haptic-description">Gentle pulse for notifications</div>
+                                </div>
+                                <button class="haptic-test">Test</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label class="form-label">Haptic Intensity</label>
+                            <input type="range" min="1" max="100" value="75" class="slider" id="hapticIntensity">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-secondary);">
+                                <span>Soft</span>
+                                <span>Strong</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="saveHapticBtn">
+                                <i class="fas fa-save"></i>
+                                Save Haptic Settings
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Notifications Section -->
+                    <section id="notifications" class="profile-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Notification Settings</h2>
+                                <p class="section-description">Manage how and when you receive notifications</p>
+                            </div>
+                        </div>
+
+                        <div class="notification-categories">
+                            <div class="notification-category">
+                                <div class="category-header">
+                                    <div class="category-name">Translation Notifications</div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </div>
+                                </div>
+                                <div class="notification-items">
+                                    <div class="notification-item">
+                                        <div class="notification-info">
+                                            <div class="notification-name">High Confidence Results</div>
+                                            <div class="notification-description">Notify when translation confidence is above 90%</div>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </div>
+                                    </div>
+                                    <div class="notification-item">
+                                        <div class="notification-info">
+                                            <div class="notification-name">Low Confidence Alerts</div>
+                                            <div class="notification-description">Alert when translation confidence is below 60%</div>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="notification-category">
+                                <div class="category-header">
+                                    <div class="category-name">Training Notifications</div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </div>
+                                </div>
+                                <div class="notification-items">
+                                    <div class="notification-item">
+                                        <div class="notification-info">
+                                            <div class="notification-name">Training Progress</div>
+                                            <div class="notification-description">Weekly training progress reports</div>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </div>
+                                    </div>
+                                    <div class="notification-item">
+                                        <div class="notification-info">
+                                            <div class="notification-name">Accuracy Improvements</div>
+                                            <div class="notification-description">Notify when your accuracy improves significantly</div>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="saveNotificationBtn">
+                                <i class="fas fa-save"></i>
+                                Save Notification Settings
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Privacy & Security Section -->
+                    <section id="privacy" class="profile-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Privacy & Security</h2>
+                                <p class="section-description">Control your data privacy and security settings</p>
+                            </div>
+                        </div>
+
+                        <div class="privacy-options">
+                            <div class="privacy-item">
+                                <div class="privacy-info">
+                                    <div class="privacy-name">Data Collection</div>
+                                    <div class="privacy-description">Allow anonymous data collection to improve the service</div>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+
+                            <div class="privacy-item">
+                                <div class="privacy-info">
+                                    <div class="privacy-name">Auto-delete History</div>
+                                    <div class="privacy-description">Automatically delete translation history after 30 days</div>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+
+                            <div class="privacy-item">
+                                <div class="privacy-info">
+                                    <div class="privacy-name">Camera Access</div>
+                                    <div class="privacy-description">Remember camera permissions</div>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </div>
+
+                            <div class="privacy-item">
+                                <div class="privacy-info">
+                                    <div class="privacy-name">Two-Factor Authentication</div>
+                                    <div class="privacy-description">Add an extra layer of security to your account</div>
+                                </div>
+                                <button class="btn btn-outline">Enable 2FA</button>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="savePrivacyBtn">
+                                <i class="fas fa-save"></i>
+                                Save Privacy Settings
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Danger Zone Section -->
+                    <section id="danger" class="profile-section" style="display: none;">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div>
+                                <h2 class="section-title">Danger Zone</h2>
+                                <p class="section-description">Irreversible actions that affect your account and data</p>
+                            </div>
+                        </div>
+
+                        <div class="danger-actions">
+                            <div class="danger-item">
+                                <div class="danger-info">
+                                    <div class="danger-name">Clear All Data</div>
+                                    <div class="danger-description">Permanently delete all your translation history and training data</div>
+                                </div>
+                                <button class="btn btn-danger" id="clearAllDataBtn">
+                                    <i class="fas fa-trash"></i>
+                                    Clear Data
+                                </button>
+                            </div>
+
+                            <div class="danger-item">
+                                <div class="danger-info">
+                                    <div class="danger-name">Reset AI Model</div>
+                                    <div class="danger-description">Reset your personal AI model to factory defaults</div>
+                                </div>
+                                <button class="btn btn-danger" id="resetModelBtn">
+                                    <i class="fas fa-brain"></i>
+                                    Reset Model
+                                </button>
+                            </div>
+
+                            <div class="danger-item">
+                                <div class="danger-info">
+                                    <div class="danger-name">Delete Account</div>
+                                    <div class="danger-description">Permanently delete your account and all associated data</div>
+                                </div>
+                                <button class="btn btn-danger" id="deleteAccountBtn">
+                                    <i class="fas fa-user-slash"></i>
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        class ProfileManager {
+            constructor() {
+                this.currentSection = 'personal';
+                this.userData = {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john.doe@example.com',
+                    phone: '+1 (555) 123-4567',
+                    bio: 'Technology enthusiast and accessibility advocate. Passionate about making communication easier for everyone.'
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.loadUserData();
+                this.bindEvents();
+                this.setupSectionNavigation();
+            }
+
+            loadUserData() {
+                const saved = utils.getItem('userProfile');
+                if (saved) {
+                    this.userData = { ...this.userData, ...saved };
+                    this.populateForm();
+                }
+            }
+
+            saveUserData() {
+                utils.setItem('userProfile', this.userData);
+            }
+
+            bindEvents() {
+                // Section navigation
+                document.querySelectorAll('.action-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const section = e.currentTarget.dataset.section;
+                        this.showSection(section);
+                    });
+                });
+
+                // Personal info form
+                document.getElementById('savePersonalBtn').addEventListener('click', () => {
+                    this.savePersonalInfo();
+                });
+
+                document.getElementById('resetPersonalBtn').addEventListener('click', () => {
+                    this.resetPersonalInfo();
+                });
+
+                // Display settings
+                document.querySelectorAll('.theme-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        this.selectTheme(option.dataset.theme);
+                    });
+                });
+
+                document.getElementById('applyDisplayBtn').addEventListener('click', () => {
+                    this.applyDisplaySettings();
+                });
+
+                // Haptic settings
+                document.querySelectorAll('.haptic-test').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.testHapticPattern(e.target.closest('.haptic-pattern'));
+                    });
+                });
+
+                document.querySelectorAll('.haptic-pattern').forEach(pattern => {
+                    pattern.addEventListener('click', () => {
+                        this.selectHapticPattern(pattern);
+                    });
+                });
+
+                document.getElementById('saveHapticBtn').addEventListener('click', () => {
+                    this.saveHapticSettings();
+                });
+
+                // Notification settings
+                document.getElementById('saveNotificationBtn').addEventListener('click', () => {
+                    this.saveNotificationSettings();
+                });
+
+                // Privacy settings
+                document.getElementById('savePrivacyBtn').addEventListener('click', () => {
+                    this.savePrivacySettings();
+                });
+
+                // Danger zone actions
+                document.getElementById('clearAllDataBtn').addEventListener('click', () => {
+                    this.clearAllData();
+                });
+
+                document.getElementById('resetModelBtn').addEventListener('click', () => {
+                    this.resetAIModel();
+                });
+
+                document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+                    this.deleteAccount();
+                });
+            }
+
+            setupSectionNavigation() {
+                this.showSection('personal');
+            }
+
+            showSection(sectionName) {
+                // Hide all sections
+                document.querySelectorAll('.profile-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // Remove active class from all nav items
+                document.querySelectorAll('.action-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Show selected section
+                document.getElementById(sectionName).style.display = 'block';
+                
+                // Add active class to selected nav item
+                document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+                this.currentSection = sectionName;
+            }
+
+            populateForm() {
+                document.getElementById('firstName').value = this.userData.firstName;
+                document.getElementById('lastName').value = this.userData.lastName;
+                document.getElementById('email').value = this.userData.email;
+                document.getElementById('phone').value = this.userData.phone;
+                document.getElementById('bio').value = this.userData.bio;
+            }
+
+            savePersonalInfo() {
+                this.userData.firstName = document.getElementById('firstName').value;
+                this.userData.lastName = document.getElementById('lastName').value;
+                this.userData.email = document.getElementById('email').value;
+                this.userData.phone = document.getElementById('phone').value;
+                this.userData.bio = document.getElementById('bio').value;
+
+                this.saveUserData();
+                this.showMessage('Personal information updated successfully!', 'success');
+                
+                // Update user card
+                document.querySelector('.user-name').textContent = 
+                    `${this.userData.firstName} ${this.userData.lastName}`;
+                document.querySelector('.user-email').textContent = this.userData.email;
+            }
+
+            resetPersonalInfo() {
+                if (confirm('Are you sure you want to reset all personal information to saved values?')) {
+                    this.populateForm();
+                    this.showMessage('Personal information reset to saved values', 'info');
+                }
+            }
+
+            selectTheme(theme) {
+                document.querySelectorAll('.theme-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                document.querySelector(`[data-theme="${theme}"]`).classList.add('selected');
+            }
+
+            applyDisplaySettings() {
+                const selectedTheme = document.querySelector('.theme-option.selected').dataset.theme;
+                const textSize = document.getElementById('textSizeSlider').value;
+                
+                // In a real app, this would apply the theme and text size
+                utils.log('Display settings applied:', { theme: selectedTheme, textSize });
+                this.showMessage('Display settings applied successfully!', 'success');
+            }
+
+            selectHapticPattern(pattern) {
+                document.querySelectorAll('.haptic-pattern').forEach(p => {
+                    p.classList.remove('selected');
+                });
+                pattern.classList.add('selected');
+            }
+
+            testHapticPattern(pattern) {
+                const patternName = pattern.querySelector('.haptic-name').textContent;
+                utils.log('Testing haptic pattern:', patternName);
+                
+                // Simulate haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+                
+                this.showMessage(`Testing ${patternName} pattern`, 'info');
+            }
+
+            saveHapticSettings() {
+                const intensity = document.getElementById('hapticIntensity').value;
+                utils.log('Haptic settings saved:', { intensity });
+                this.showMessage('Haptic settings saved successfully!', 'success');
+            }
+
+            saveNotificationSettings() {
+                utils.log('Notification settings saved');
+                this.showMessage('Notification settings saved successfully!', 'success');
+            }
+
+            savePrivacySettings() {
+                utils.log('Privacy settings saved');
+                this.showMessage('Privacy settings saved successfully!', 'success');
+            }
+
+            clearAllData() {
+                if (confirm('Are you sure you want to clear ALL your data? This includes translation history, training data, and preferences. This action cannot be undone.')) {
+                    // Clear all local storage
+                    utils.clearStorage();
+                    this.showMessage('All data has been cleared successfully!', 'success');
+                    
+                    // Reload the page to reflect changes
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            }
+
+            resetAIModel() {
+                if (confirm('Are you sure you want to reset your AI model? This will delete all your training data and the model will need to be retrained. This action cannot be undone.')) {
+                    utils.log('AI model reset requested');
+                    this.showMessage('AI model has been reset. Please retrain the model for optimal performance.', 'warning');
+                }
+            }
+
+            deleteAccount() {
+                if (confirm('WARNING: This will permanently delete your account and all associated data. This action cannot be undone. Are you absolutely sure?')) {
+                    if (confirm('Please type "DELETE" to confirm account deletion:')) {
+                        utils.log('Account deletion requested');
+                        this.showMessage('Account deletion scheduled. You will be logged out shortly.', 'error');
+                        
+                        // Simulate account deletion
+                        setTimeout(() => {
+                            utils.clearStorage();
+                            window.location.href = '../index.html';
+                        }, 3000);
+                    }
+                }
+            }
+
+            showMessage(message, type = 'info') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `alert alert-${type}`;
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    z-index: 1000;
+                    min-width: 300px;
+                `;
+                messageDiv.textContent = message;
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize profile manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.profileManager = new ProfileManager();
+        });
+    </script>
+</body>
+</html>
