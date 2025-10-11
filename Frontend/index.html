@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/home.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- MediaPipe CDN for Face Landmarker -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/vision_bundle.js"></script>
+    <!-- Tesseract.js for text extraction -->
+    <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
 </head>
 <body>
     <!-- Navigation Header -->
@@ -81,6 +86,7 @@
 
                 <div class="camera-container">
                     <div class="camera-preview">
+                        <!-- Video and Canvas will be added via JS -->
                         <div class="face-guide">
                             <div class="face-circle">
                                 <div class="face-landmarks">
