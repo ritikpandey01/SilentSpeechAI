@@ -1,230 +1,259 @@
-# 🧠 SilentSpeechAI — AI‑Powered Silent Speech Translator
+# SilentSpeechAI 🎥➡️💬
 
-Transforming silent videos into text. Bridging vision and language through deep learning.
+An **AI-driven silent communication tool** that decodes lip movements directly from videos using cutting-edge Computer Vision and Deep Learning techniques.
 
+## ✨ Key Features
 
-SilentSpeechAI decodes lip movements directly from video and converts them into readable text. Built with Computer Vision, Deep Learning, and an interactive Streamlit UI, it aims to revolutionize accessibility and enable silent communication anywhere.
-
----
-
-## ✨ Highlights
-
-- 🎥 Converts silent videos into text in near real time
-- 🧠 3D CNN + Bi‑LSTM LipNet-inspired architecture
-- ⚡ Frame‑wise processing and streaming prediction
-- 💬 Streamlit-based, one‑click web interface
-- 🧩 Modular backend–frontend design
+- 🎥 **Video-to-Text Conversion** — Transforms silent video into readable text
+- 🧠 **Advanced Architecture** — Custom 3D CNN + Bi-LSTM LipNet model
+- ⚡ **Real-Time Processing** — Fast frame extraction and prediction
+- 💬 **User-Friendly Interface** — Seamless Streamlit-based web UI
+- 🧩 **Modular Design** — Flexible backend-frontend separation
 
 ---
 
-## 🧩 System Architecture
+## 🏗️ System Architecture
 
-```mermaid
-graph LR
-  A[Video Input] --> B[Frame Extraction (OpenCV)]
-  B --> C[Feature Learning (3D CNN)]
-  C --> D[Temporal Modeling (Bi-LSTM)]
-  D --> E[CTC Decoder]
-  E --> F[Text Output]
+```
+Video Input
+    ↓
+Frame Extraction (OpenCV)
+    ↓
+Feature Learning (3D CNN)
+    ↓
+Temporal Modeling (Bi-LSTM)
+    ↓
+CTC Decoder
+    ↓
+Text Output
 ```
 
 ---
 
-## 🗂️ Repository Structure
+## 📂 Repository Structure
 
 ```
 SilentSpeechAI/
+│
 ├── Backend/
 │   ├── app/
-│   │   ├── streamlitapp.py         # Streamlit UI launcher
-│   │   ├── utils.py                # Helper utilities
-│   │   ├── modelutil.py            # Model loading / inference utils
-│   │   ├── debug_model.py          # Debug / diagnostics
-│   │   ├── test_video.mp4          # Sample input video
-│   │   └── *.ipynb                 # Notebooks for quick tests
+│   │   ├── streamlitapp.py          # Streamlit UI launcher
+│   │   ├── modelutil.py              # Model utilities
+│   │   ├── utils.py                  # Helper functions
+│   │   ├── test.video.mp4            # Sample input video
+│   │   ├── debug_model.py
+│   │   ├── diagnostics.ipynb
+│   │   └── x.ipynb
+│   │
 │   ├── models/
-│   │   ├── checkpoint.*            # Trained model weights (place here)
-│   │   └── data.zip                # Dataset archive (optional)
-│   ├── LipNet.ipynb                # Training notebook
-│   └── animation.gif               # Demo animation
-├── FrameCaptureSystem/
-│   ├── app.py                      # Frame extraction & lip ROI detection
-│   ├── requirements.txt
-│   └── yolov8n.pt                  # Pretrained YOLO model for detection
+│   │   ├── checkpoint.*              # Trained model weights
+│   │   ├── data.zip                  # Dataset archive
+│   │   └── LipNet.ipynb              # Model training notebook
+│   │
+│   └── FrameCaptureSystem/
+│       ├── app.py                    # Frame extraction & lip detection
+│       ├── requirements.txt
+│       └── yolov8n.pt                # Pretrained YOLO model
+│
 ├── Frontend/
-│   ├── css/                        # Styles
-│   ├── js/                         # Client-side logic
-│   ├── pages/                      # Static pages
-│   └── index.html                  # Web entry point
-├── LICENSE
+│   ├── css/
+│   │   ├── style.css
+│   │   ├── home.css
+│   │   └── components.css
+│   │
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── lip-reading.js
+│   │   └── utils.js
+│   │
+│   └── pages/
+│       ├── index.html
+│       ├── emotion.html
+│       ├── help.html
+│       ├── history.html
+│       ├── language.html
+│       ├── profile.html
+│       └── training.html
+│
 └── README.md
 ```
 
 ---
 
-## 🧰 Tech Stack
+## 🚀 Getting Started
 
-- Language: Python, JavaScript, HTML, CSS
-- Frameworks: Streamlit, OpenCV, TensorFlow/Keras
-- Model: LipNet‑style 3D CNN + Bi‑LSTM + CTC
-- Detection: YOLOv8 (for face/lip ROI)
-- Environment: Jupyter Notebook
+### Prerequisites
 
----
+- Python 3.8 or higher
+- pip package manager
+- Jupyter Notebook (for training)
 
-## ⚙️ Setup
+### Installation
 
-1) Clone the repository
+**1. Clone the Repository**
 
 ```bash
 git clone https://github.com/yourusername/SilentSpeechAI.git
 cd SilentSpeechAI
 ```
 
-2) Create & activate a virtual environment
+**2. Create Virtual Environment**
 
 ```bash
-python -m venv .venv
-# Linux / macOS
-source .venv/bin/activate
-# Windows (PowerShell)
-.venv\\Scripts\\Activate.ps1
+python -m venv env
+
+# Activate environment
+source env/bin/activate       # Linux / Mac
+env\Scripts\activate          # Windows
 ```
 
-3) Install dependencies
+**3. Install Dependencies**
 
 ```bash
-# Core CV / DL / utilities
-pip install -r FrameCaptureSystem/requirements.txt
-# If needed for notebooks & UI
-pip install jupyter streamlit
+pip install -r Backend/FrameCaptureSystem/requirements.txt
 ```
 
-4) Verify dataset & model checkpoints
+**4. Verify Model Files**
 
-Ensure the following exist under `Backend/models/` (create the folder if missing):
-
-- `checkpoint.*` (model weights)
-- `data.zip` (dataset archive, optional)
-
-Training notebook location: `Backend/LipNet.ipynb` (or `Backend/models/LipNet.ipynb` if you prefer).
+Ensure these files exist in `Backend/models/`:
+- `checkpoint.data-*`
+- `checkpoint.index`
+- `LipNet.ipynb`
+- `data.zip`
 
 ---
 
-## 🧠 Training
+## 🧠 Model Training
 
-The training pipeline is provided as a notebook.
+Train the model using the provided Jupyter notebook:
 
 ```bash
-# Option A: if the notebook is under Backend/
-cd Backend
-jupyter notebook LipNet.ipynb
-
-# Option B: if you move it to Backend/models/
 cd Backend/models
 jupyter notebook LipNet.ipynb
 ```
 
-Training pipeline overview:
+### Training Pipeline
 
-- Preprocess video frames using OpenCV
-- Extract lip ROI (with YOLOv8 + landmarks)
-- Train 3D CNN for spatiotemporal feature extraction
-- Use Bi‑LSTM for sequence modeling
-- Decode with CTC (Connectionist Temporal Classification)
+1. **Preprocess** video frames using OpenCV
+2. **Extract** lip region (ROI)
+3. **Train** 3D CNN for spatial-temporal feature extraction
+4. **Model** sequences using Bi-LSTM
+5. **Decode** predictions with CTC (Connectionist Temporal Classification)
+
+### Model Performance
+
+| Metric | Value |
+|--------|-------|
+| **Architecture** | 3D CNN + Bi-LSTM |
+| **Input Size** | 75 frames per clip |
+| **Decoder** | CTC Loss |
+| **Training Accuracy** | ~75% |
+| **Validation Accuracy** | ~68% |
+| **Character Error Rate** | ~15% |
+| **Processing Time** | ~2–3s per video |
 
 ---
 
-## 🖥️ Run the App
+## 🖥️ Running the Application
 
-After training (or if you already have pretrained weights):
+After training (or with pretrained weights):
 
 ```bash
 cd Backend/app
 streamlit run streamlitapp.py
 ```
 
-Open your browser at: http://localhost:8501
+Open your browser at **http://localhost:8501**
 
-Quick test: use the bundled sample `test_video.mp4`.
+### How It Works
 
----
-
-## 🧭 Workflow
-
-1) Upload a silent video
-2) System extracts facial ROI frames
-3) Model predicts corresponding text
-4) Output is displayed in real time
-
----
-
-## 📊 Benchmarks (sample)
-
-- Architecture: 3D CNN + Bi‑LSTM + CTC
-- Input: 75 frames per clip
-- Training Accuracy: ~75%
-- Validation Accuracy: ~68%
-- Character Error Rate (CER): ~15%
-- Processing Time: ~2–3 s per video (depending on hardware)
-
-Note: Metrics vary based on dataset size, preprocessing, and compute.
+1. 📤 Upload a silent video
+2. 🔍 System extracts facial ROI frames
+3. 🤖 Model predicts corresponding text
+4. ✅ Output displayed in real-time
 
 ---
 
 ## 💡 Applications
 
-- 🧏 Accessibility for the hearing‑impaired
-- 🧠 Silent communication systems
-- 🛡️ Surveillance and security analytics
-- 🎬 Automatic subtitle generation
-- 🗣️ Voice assistants in noisy environments
+- 🧏 **Accessibility** — Communication tools for the hearing-impaired
+- 🛡️ **Security** — Surveillance and forensic analytics
+- 🎬 **Media** — Automatic subtitle generation
+- 🗣️ **Voice Assistants** — Silent operation in noisy environments
+- 🧠 **Research** — Human-computer interaction studies
 
 ---
 
-## 🔮 Roadmap
+## 🔮 Future Enhancements
 
-- 🔁 Real‑time webcam inference
-- 🌐 Multi‑language lip reading
+- 🔁 Real-time webcam-based inference
+- 🌐 Multi-language lip reading support
 - 📱 Mobile app integration
 - 🧰 Expanded vocabulary dataset
-- 💬 Emotion‑aware lip reading (sentiment decoding)
+- 💬 Emotion-aware sentiment decoding
 
 ---
 
-## 🤝 Contributing
+## 🛠️ Tech Stack
 
-Contributions are welcome! Please open an issue or submit a pull request:
-
-- Fork the repo
-- Create a feature branch
-- Commit with clear messages
-- Open a PR with a concise description and screenshots/demos where relevant
-
----
-
-## 🧑‍💻 Contributors
-
-- Ritik Pandey  
-- Shreya Doye  
-- Suraj Dhere  
-- Sahil Sheikh
-
-Guided Research Project — Lip Reading & Silent Speech Recognition for AI‑Powered Communication
+| Category | Technologies |
+|----------|-------------|
+| **Languages** | Python, JavaScript, HTML, CSS |
+| **Frameworks** | Streamlit, OpenCV, TensorFlow, Keras |
+| **Model** | LipNet (3D CNN + BiLSTM + CTC) |
+| **Detection** | YOLOv8 |
+| **Frontend** | HTML/CSS/JS modular pages |
+| **Environment** | Jupyter Notebook |
 
 ---
 
-## 🏆 Hackathon Impact
+## 👥 Contributors
 
-SilentSpeechAI enables machines to “listen” through vision, fusing deep learning, computer vision, and natural language decoding to understand speech without sound.
+- **Ritik Pandey**
+- **Shreya Doye**
+- **Suraj Dhere**
+- **Sahil Sheikh**
 
-- 🧠 Advanced architecture
-- 🌍 Social impact
-- ⚙️ Real‑world usability
-- 💡 Expandable and research‑friendly design
+*Guided Research Project — Lip Reading & Silent Speech Recognition for AI-Powered Communication*
+
+---
+
+## 🏆 Project Impact
+
+SilentSpeechAI redefines accessibility by allowing humans and machines to "listen" through vision. Our innovation fuses deep learning, computer vision, and natural language decoding to create AI that understands speech without sound.
+
+### What Makes Us Stand Out
+
+- 🧠 **Advanced Architecture** — State-of-the-art deep learning model
+- 🌍 **Social Impact** — Empowering the hearing-impaired community
+- ⚙️ **Real-World Usability** — Production-ready implementation
+- 💡 **Research-Friendly** — Expandable and well-documented codebase
 
 ---
 
 ## 📄 License
 
-This project is open‑source under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is open-source under the [MIT License](LICENSE).  
+You may freely use, modify, and distribute this software with proper attribution.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+## 📧 Contact
+
+For questions or collaboration opportunities, please open an issue or reach out to the contributors.
+
+---
+
+<div align="center">
+
+**Made with ❤️ for accessible AI communication**
+
+⭐ Star this repo if you find it helpful!
+
+</div>
