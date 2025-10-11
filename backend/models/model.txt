@@ -1,0 +1,2 @@
+put your trained model here 
+train it using lipnet.ipynb
