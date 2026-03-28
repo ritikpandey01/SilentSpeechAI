@@ -5,7 +5,6 @@ import os
 model = YOLO("yolov8n.pt")
 #i am shreya 
 
-#i am shreya doye 
 # folder to save frames
 save_dir = "captured_frames"
 os.makedirs(save_dir, exist_ok=True)
